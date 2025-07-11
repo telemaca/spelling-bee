@@ -1,103 +1,276 @@
-import Image from "next/image";
+"use client";
 
-export default function Home() {
+import { useState, useEffect, useRef } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import { PrimeReactProvider } from "primereact/api";
+import {
+  findValidWords,
+  calculatePoints,
+  // getDailyPanal,
+} from "../utils/wordFinder";
+// import { useDailyPanal } from "./hooks/usedailyPanal";
+import HexGrid from "./components/Hexgrid/Hexgrid";
+
+import "primeicons/primeicons.css";
+
+export default function WordFinder() {
+  const [guessedWord, setGuessedWord] = useState("");
+  const [centerLetter] = useState("m");
+  const [possibleWords, setPossibleWords] = useState<string[]>([]);
+  const [foundWords, setFoundWords] = useState<string[]>([]);
+  const [points, setPoints] = useState<number>(0);
+  const [maxPoints, setMaxPoints] = useState<number>(0);
+  const [errorCount, setErrorCount] = useState<number>(0);
+  const [shuffleId, setShuffleId] = useState<number>(0);
+  const [isVisible, setIsVisible] = useState<boolean>(true);
+
+  type FeedbackType = "success" | "short" | "error" | "existing";
+  interface FeedbackState {
+    on: boolean;
+    message: string;
+    type: FeedbackType;
+  }
+
+  const [feedback, setFeedback] = useState<FeedbackState>({
+    on: false,
+    message: ".",
+    type: "short",
+  });
+
+  const [fixedLetters] = useState("roabgem");
+  const letterArray = fixedLetters.toLowerCase().split("");
+
+  const lettersWithoutCenter = letterArray.filter(
+    (letter) => letter !== centerLetter
+  );
+
+  const [gridLetters, setGridLetters] =
+    useState<string[]>(lettersWithoutCenter);
+
+  const inputRef = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    inputRef.current?.focus();
+  }, []);
+
+  useEffect(() => {
+    // Cargamos las palabras desde un endpoint local
+    fetch("/spanish-words.txt")
+      .then((res) => res.text())
+      .then((text) => {
+        const allWords = text.split("\n").map((w) => w.trim().toLowerCase());
+        const words = findValidWords(
+          letterArray,
+          centerLetter.toLowerCase(),
+          allWords
+        );
+        setPossibleWords(words);
+        const mapPoints = words.reduce(
+          (sum, word) => sum + calculatePoints(word, letterArray),
+          0
+        );
+        setMaxPoints(mapPoints);
+      });
+  }, []);
+
+  const handleSearch = () => {
+    if (guessedWord.length < 4) {
+      setErrorCount((prev) => prev + 1);
+      setFeedback({
+        on: true,
+        message: "Muy corta",
+        type: "short",
+      });
+    } else {
+      if (possibleWords.includes(guessedWord)) {
+        if (!foundWords.includes(guessedWord)) {
+          //! PALABRA CORRECTA NUEVA
+          const wordPoints = calculatePoints(guessedWord, letterArray);
+          setFeedback({
+            on: true,
+            message: `+ ${wordPoints} ${wordPoints > 1 ? "puntos" : "punto"}`,
+            type: "success",
+          });
+          setFoundWords([...foundWords, guessedWord]);
+          setPoints(points + wordPoints);
+        } else {
+          //! PALABRA YA ENCONTRADA
+          setErrorCount((prev) => prev + 1);
+          setFeedback({
+            on: true,
+            message: "Ya encontrada",
+            type: "existing",
+          });
+        }
+      } else {
+        //! PALABRA NO VÁLIDA
+        setErrorCount((prev) => prev + 1);
+        setFeedback({
+          on: true,
+          message: "No es válida",
+          type: "error",
+        });
+      }
+    }
+
+    setTimeout(() => {
+      setGuessedWord("");
+    }, 1000);
+
+    setTimeout(() => {
+      setFeedback({
+        on: false,
+        message: ".",
+        type: "short",
+      });
+    }, 2000);
+  };
+
+  const handleEnter = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === "Enter") {
+      handleSearch();
+    }
+  };
+
+  const handleDelete = () => {
+    setGuessedWord((prev) => prev.slice(0, -1));
+  };
+
+  const handleOnClickLetter = (letter: string) => {
+    setGuessedWord((prev) => prev + letter);
+  };
+
+  function shuffleArray<T>(array: T[]): T[] {
+    const arr = [...array];
+    for (let i = arr.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [arr[i], arr[j]] = [arr[j], arr[i]];
+    }
+    return arr;
+  }
+
+  const shuffleLetters = () => {
+    setIsVisible(false);
+    setShuffleId(shuffleId + 1);
+    setTimeout(() => {
+      setGridLetters((prev) => shuffleArray(prev));
+      setIsVisible(true);
+    }, 300);
+  };
+
+  const getFeedbackColor = (feedbackType: string) => {
+    switch (feedbackType) {
+      case "success":
+        return "bg-green-500";
+      case "error":
+        return "bg-red-500";
+      case "existing":
+        return "bg-orange-400";
+      case "short":
+        return "bg-gray-500";
+    }
+  };
+
   return (
-    <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
-      <main className="flex flex-col gap-[32px] row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="list-inside list-decimal text-sm/6 text-center sm:text-left font-[family-name:var(--font-geist-mono)]">
-          <li className="mb-2 tracking-[-.01em]">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] px-1 py-0.5 rounded font-[family-name:var(--font-geist-mono)] font-semibold">
-              src/app/page.tsx
-            </code>
-            .
-          </li>
-          <li className="tracking-[-.01em]">
-            Save and see your changes instantly.
-          </li>
-        </ol>
+    <PrimeReactProvider>
+      <div className="p-6 max-w-xl m-auto flex flex-col font-sans">
+        {/* <h1 className="text-2xl font-bold mb-16 m-auto">Panal de Letras</h1> */}
 
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:w-auto"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
+        <motion.div
+          key={errorCount}
+          className="mb-18 m-auto"
+          animate={{ x: [0, -8, 8, -6, 6, -4, 4, 0] }}
+          transition={{ duration: 0.6 }}
+        >
+          <div
+            className={`${
+              feedback.on && "fade-in"
+            } opacity-0 ${getFeedbackColor(
+              feedback.type
+            )} text-white w-30 text-sm rounded text-center p-2 m-auto mb-6 mh-16`}
           >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 w-full sm:w-auto md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
+            {feedback.message}
+          </div>
+          <input
+            type="text"
+            ref={inputRef}
+            className="border p-2 ml-2 opacity-0 pointer-events-none absolute"
+            value={guessedWord}
+            onChange={(e) => setGuessedWord(e.target.value)}
+            onKeyDown={handleEnter}
+          />
+          <div className="flex gap-1 flex-wrap justify-center min-h-10 custom-input">
+            <AnimatePresence>
+              {guessedWord.split("").map((letter, i) => (
+                <motion.div
+                  key={i}
+                  initial={{ scale: 1, opacity: 0 }}
+                  animate={{ scale: 1, opacity: 1 }}
+                  exit={{ scale: 1, opacity: 1 }}
+                  transition={{
+                    duration: 0.5,
+                    type: "spring",
+                    stiffness: 300,
+                    damping: 20,
+                  }}
+                  className={`font-bold text-2xl ${
+                    letter === centerLetter ? "text-yellow-400" : ""
+                  }`}
+                >
+                  {letter.toUpperCase()}
+                </motion.div>
+              ))}
+            </AnimatePresence>
+          </div>
+        </motion.div>
+
+        <HexGrid
+          letters={gridLetters}
+          centerLetter={centerLetter}
+          isVisible={isVisible}
+          shuffleVersion={shuffleId}
+          onClickLetter={handleOnClickLetter}
+        />
+
+        <div className="flex gap-4 m-auto">
+          <button
+            onClick={handleDelete}
+            className="bg-white text-black px-4 py-2 rounded-full text-sm"
           >
-            Read our docs
-          </a>
+            Borrar
+          </button>
+
+          <button
+            onClick={shuffleLetters}
+            className="pi pi-refresh bg-white text-black px-4 py-2 rounded-full text-sm"
+          ></button>
+
+          <button
+            onClick={handleSearch}
+            className="bg-white text-black px-4 py-2 rounded-full text-sm"
+          >
+            Aplicar
+          </button>
         </div>
-      </main>
-      <footer className="row-start-3 flex gap-[24px] flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
-    </div>
+
+        <div className="mt-6">
+          {/* <h2 className="font-semibold mb-2">Puntos posibles: {maxPoints}</h2>
+          <h2 className="font-semibold mb-2">
+            Palabras posibles: {possibleWords.length}
+          </h2> */}
+          <h2 className="font-semibold mb-2">Puntos: {points}</h2>
+          <h2 className="font-semibold mb-2">
+            Palabras encontradas: {foundWords.length}
+          </h2>
+          <ul className="list-disc list-inside">
+            {foundWords.sort().map((word, i) => (
+              <li key={i}>
+                {word} ({calculatePoints(word, letterArray)} puntos)
+              </li>
+            ))}
+          </ul>
+        </div>
+      </div>
+    </PrimeReactProvider>
   );
 }

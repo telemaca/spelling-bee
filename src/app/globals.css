@@ -1,4 +1,5 @@
 @import "tailwindcss";
+@import "../app/components/Hexgrid/styles.scss";
 
 :root {
   --background: #ffffff;
@@ -23,4 +24,21 @@ body {
   background: var(--background);
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
+}
+
+@keyframes fadeIn {
+  0% {
+    opacity: 0;
+  }
+  50% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+
+.fade-in {
+  animation: fadeIn 3s;
+  animation-timing-function: ease-out;
 }
