@@ -175,7 +175,6 @@ export default function WordFinder() {
     <PrimeReactProvider>
       <div className="p-6 max-w-xl m-auto flex flex-col font-sans">
         {/* <h1 className="text-2xl font-bold mb-16 m-auto">Panal de Letras</h1> */}
-        git remote add origin https://github.com/telemaca/spelling-bee.git
         <motion.div
           key={errorCount}
           className="mb-18 m-auto"
