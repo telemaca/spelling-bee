@@ -175,7 +175,7 @@ export default function WordFinder() {
     <PrimeReactProvider>
       <div className="p-6 max-w-xl m-auto flex flex-col font-sans">
         {/* <h1 className="text-2xl font-bold mb-16 m-auto">Panal de Letras</h1> */}
-
+        git remote add origin https://github.com/telemaca/spelling-bee.git
         <motion.div
           key={errorCount}
           className="mb-18 m-auto"
@@ -223,7 +223,6 @@ export default function WordFinder() {
             </AnimatePresence>
           </div>
         </motion.div>
-
         <HexGrid
           letters={gridLetters}
           centerLetter={centerLetter}
@@ -231,7 +230,6 @@ export default function WordFinder() {
           shuffleVersion={shuffleId}
           onClickLetter={handleOnClickLetter}
         />
-
         <div className="flex gap-4 m-auto">
           <button
             onClick={handleDelete}
@@ -252,12 +250,11 @@ export default function WordFinder() {
             Aplicar
           </button>
         </div>
-
         <div className="mt-6">
-          {/* <h2 className="font-semibold mb-2">Puntos posibles: {maxPoints}</h2>
+          <h2 className="font-semibold mb-2">Puntos posibles: {maxPoints}</h2>
           <h2 className="font-semibold mb-2">
             Palabras posibles: {possibleWords.length}
-          </h2> */}
+          </h2>
           <h2 className="font-semibold mb-2">Puntos: {points}</h2>
           <h2 className="font-semibold mb-2">
             Palabras encontradas: {foundWords.length}
