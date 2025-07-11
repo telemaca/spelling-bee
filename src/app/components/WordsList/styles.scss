@@ -1,0 +1,55 @@
+.p-accordion-header-text,
+.header-text {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.custom-accordeon {
+  position: absolute;
+  top: 20px;
+  width: 90%;
+  border: 1px solid white;
+  border-radius: 6px;
+  padding: 10px 20px;
+  height: 45px;
+  transition: height 1s;
+  overflow: hidden;
+  background-color: black;
+
+  &.expand {
+    height: 500px;
+  }
+
+  .header-container {
+    position: relative;
+
+    .header-text {
+      width: 90%;
+
+      &.border-bottom {
+        border-bottom: 1px dashed white;
+        padding-bottom: 8px;
+      }
+    }
+  }
+
+  .pi-chevron-down,
+  .pi-chevron-up {
+    position: absolute;
+    right: 10px;
+    top: 2px;
+    font-size: 1.2rem;
+    cursor: pointer;
+  }
+
+  .words-list {
+    margin-top: 12px;
+    opacity: 0;
+    transition: opacity 1s;
+
+    &.shown {
+      opacity: 1;
+    }
+  }
+}

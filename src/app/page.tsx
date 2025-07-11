@@ -92,7 +92,7 @@ export default function WordFinder() {
             message: `+ ${wordPoints} ${wordPoints > 1 ? "puntos" : "punto"}`,
             type: "success",
           });
-          setFoundWords([...foundWords, guessedWord]);
+          setFoundWords([guessedWord, ...foundWords]);
           setPoints(points + wordPoints);
         } else {
           //! PALABRA YA ENCONTRADA
@@ -184,7 +184,7 @@ export default function WordFinder() {
 
   return (
     <PrimeReactProvider>
-      <div className="p-6 max-w-xl m-auto flex flex-col font-sans">
+      <div className="p-6 max-w-xl m-auto flex flex-col font-sans pt-30 relative">
         {/* <h1 className="text-2xl font-bold mb-16 m-auto">Panal de Letras</h1> */}
         <motion.div
           key={errorCount}
@@ -261,13 +261,10 @@ export default function WordFinder() {
           </button>
         </div>
         <div className="mt-6">
+          <h1 className="font-semibold mb-2">Puntos: {points}</h1>
           <h2 className="font-semibold mb-2">Puntos posibles: {maxPoints}</h2>
           <h2 className="font-semibold mb-2">
             Palabras posibles: {possibleWords.length}
-          </h2>
-          <h2 className="font-semibold mb-2">Puntos: {points}</h2>
-          <h2 className="font-semibold mb-2">
-            Palabras encontradas: {foundWords.length}
           </h2>
           <WordList wordList={foundWords} />
         </div>
