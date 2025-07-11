@@ -10,6 +10,7 @@ import {
 } from "../utils/wordFinder";
 // import { useDailyPanal } from "./hooks/usedailyPanal";
 import HexGrid from "./components/Hexgrid/Hexgrid";
+import WordList from "./components/WordsList/WordsList";
 
 import "primeicons/primeicons.css";
 
@@ -103,13 +104,23 @@ export default function WordFinder() {
           });
         }
       } else {
-        //! PALABRA NO VÁLIDA
-        setErrorCount((prev) => prev + 1);
-        setFeedback({
-          on: true,
-          message: "No es válida",
-          type: "error",
-        });
+        if (!guessedWord.includes(centerLetter)) {
+          //! PALABRA SIN LETRAS CENTRAL
+          setErrorCount((prev) => prev + 1);
+          setFeedback({
+            on: true,
+            message: "¿Letra central?",
+            type: "error",
+          });
+        } else {
+          //! PALABRA NO VÁLIDA
+          setErrorCount((prev) => prev + 1);
+          setFeedback({
+            on: true,
+            message: "No es válida",
+            type: "error",
+          });
+        }
       }
     }
 
@@ -161,7 +172,7 @@ export default function WordFinder() {
   const getFeedbackColor = (feedbackType: string) => {
     switch (feedbackType) {
       case "success":
-        return "bg-green-500";
+        return "bg-green-500 grow-in";
       case "error":
         return "bg-red-500";
       case "existing":
@@ -183,7 +194,7 @@ export default function WordFinder() {
         >
           <div
             className={`${
-              feedback.on && "fade-in"
+              feedback.on && feedback.type !== "success" && "fade-in"
             } opacity-0 ${getFeedbackColor(
               feedback.type
             )} text-white w-30 text-sm rounded text-center p-2 m-auto mb-6 mh-16`}
@@ -258,13 +269,7 @@ export default function WordFinder() {
           <h2 className="font-semibold mb-2">
             Palabras encontradas: {foundWords.length}
           </h2>
-          <ul className="list-disc list-inside">
-            {foundWords.sort().map((word, i) => (
-              <li key={i}>
-                {word} ({calculatePoints(word, letterArray)} puntos)
-              </li>
-            ))}
-          </ul>
+          <WordList wordList={foundWords} />
         </div>
       </div>
     </PrimeReactProvider>
