@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { PrimeReactProvider } from "primereact/api";
 import {
@@ -13,6 +13,8 @@ import HexGrid from "./components/Hexgrid/Hexgrid";
 import WordList from "./components/WordsList/WordsList";
 
 import "primeicons/primeicons.css";
+
+const LOCAL_KEY = "gameState";
 
 export default function WordFinder() {
   const [guessedWord, setGuessedWord] = useState("");
@@ -48,13 +50,13 @@ export default function WordFinder() {
   const [gridLetters, setGridLetters] =
     useState<string[]>(lettersWithoutCenter);
 
-  const inputRef = useRef<HTMLInputElement>(null);
-
   useEffect(() => {
-    inputRef.current?.focus();
-  }, []);
-
-  useEffect(() => {
+    const stateOfGame = localStorage.getItem(LOCAL_KEY);
+    if (stateOfGame) {
+      const parsedData = JSON.parse(stateOfGame);
+      setFoundWords(parsedData.words);
+      setPoints(parsedData.points);
+    }
     // Cargamos las palabras desde un endpoint local
     fetch("/spanish-words.txt")
       .then((res) => res.text())
@@ -94,6 +96,11 @@ export default function WordFinder() {
           });
           setFoundWords([guessedWord, ...foundWords]);
           setPoints(points + wordPoints);
+          const gameState = {
+            words: [guessedWord, ...foundWords],
+            points: points + wordPoints,
+          };
+          localStorage.setItem(LOCAL_KEY, JSON.stringify(gameState));
         } else {
           //! PALABRA YA ENCONTRADA
           setErrorCount((prev) => prev + 1);
@@ -192,12 +199,7 @@ export default function WordFinder() {
 
         <WordList wordList={foundWords} />
 
-        <motion.div
-          key={errorCount}
-          className="mb-4 m-auto pt-26"
-          animate={{ x: [0, -8, 8, -6, 6, -4, 4, 0] }}
-          transition={{ duration: 0.6 }}
-        >
+        <div className="mb-4 m-auto pt-26">
           <div
             className={`${
               feedback.on && feedback.type !== "success" && "fade-in"
@@ -209,20 +211,25 @@ export default function WordFinder() {
           </div>
           <input
             type="text"
-            ref={inputRef}
+            // ref={inputRef}
             className="border p-2 ml-2 opacity-0 pointer-events-none absolute"
             value={guessedWord}
             onChange={(e) => setGuessedWord(e.target.value)}
             onKeyDown={handleEnter}
           />
-          <div className="flex gap-1 flex-wrap justify-center min-h-10 custom-input">
+          <motion.div
+            className="flex gap-1 flex-wrap justify-center min-h-10 custom-input"
+            key={errorCount}
+            animate={{ x: [0, -8, 8, -6, 6, -4, 4, 0] }}
+            transition={{ duration: 0.6 }}
+          >
             <AnimatePresence>
               {guessedWord.split("").map((letter, i) => (
                 <motion.div
                   key={i}
                   initial={{ scale: 1, opacity: 0 }}
                   animate={{ scale: 1, opacity: 1 }}
-                  exit={{ scale: 1, opacity: 1 }}
+                  exit={{}}
                   transition={{
                     duration: 0.5,
                     type: "spring",
@@ -237,8 +244,8 @@ export default function WordFinder() {
                 </motion.div>
               ))}
             </AnimatePresence>
-          </div>
-        </motion.div>
+          </motion.div>
+        </div>
         <HexGrid
           letters={gridLetters}
           centerLetter={centerLetter}
@@ -256,7 +263,7 @@ export default function WordFinder() {
 
           <button
             onClick={shuffleLetters}
-            className="pi pi-refresh rounded-full text-sm custom-button w-10 h-10"
+            className="pi pi-refresh rounded-full text-xl custom-button custom-button-icon w-12 h-12"
           ></button>
 
           <button

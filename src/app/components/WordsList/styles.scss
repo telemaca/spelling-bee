@@ -14,7 +14,7 @@
   border-radius: 6px;
   padding: 10px 20px;
   height: 45px;
-  transition: height 1s;
+  transition: height 0.3s;
   overflow: hidden;
   background-color: #171717;
   z-index: 3;
@@ -39,7 +39,7 @@
   .pi-chevron-down,
   .pi-chevron-up {
     position: absolute;
-    right: 10px;
+    right: -6px;
     top: 2px;
     font-size: 1.2rem;
     cursor: pointer;
@@ -52,6 +52,13 @@
 
     &.shown {
       opacity: 1;
+    }
+
+    .found-word {
+      border-bottom: 1px solid gray;
+      padding-bottom: 1px;
+      margin-top: 4px;
+      width: 50%;
     }
   }
 }

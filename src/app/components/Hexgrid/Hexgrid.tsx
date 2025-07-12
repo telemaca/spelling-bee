@@ -18,7 +18,7 @@ export default function HexGrid({
   const getClass = (letter: string) =>
     letter === centerLetter
       ? "bg-yellow-500 text-black font-bold"
-      : "bg-gray-600 text-white";
+      : "bg-gray-700 text-white";
 
   const grid2 = [
     [letters[0], letters[1], letters[2]],

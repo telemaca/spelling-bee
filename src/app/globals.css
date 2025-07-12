@@ -75,5 +75,10 @@ body {
 
 .custom-button {
   background-color: #171717;
-  border: 1px solid gray;
+  border: 1px solid rgb(85, 84, 84);
+  padding: 12px 24px;
+}
+
+.custom-button-icon {
+  padding: 0;
 }

@@ -37,7 +37,9 @@ export default function WordList({ wordList }: WordListProps) {
         <div className={`words-list ${isOpen && "shown"}`}>
           <ul>
             {wordListCopy.sort().map((word, i) => (
-              <li key={i}>{word}</li>
+              <li key={i} className="found-word">
+                {word}
+              </li>
             ))}
           </ul>
         </div>
