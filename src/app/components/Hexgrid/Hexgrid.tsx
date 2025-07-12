@@ -17,13 +17,13 @@ export default function HexGrid({
 }: HexGridProps) {
   const getClass = (letter: string) =>
     letter === centerLetter
-      ? "bg-yellow-500 text-white font-bold"
-      : "bg-white text-gray-800";
+      ? "bg-yellow-500 text-black font-bold"
+      : "bg-gray-600 text-white";
 
-  const grid = [
-    [letters[0], letters[1]],
-    [letters[2], centerLetter, letters[3]],
-    [letters[4], letters[5]],
+  const grid2 = [
+    [letters[0], letters[1], letters[2]],
+    [centerLetter],
+    [letters[3], letters[4], letters[5]],
   ];
 
   const getLetterComponent = (letter: string, j: number) => {
@@ -49,24 +49,45 @@ export default function HexGrid({
   };
 
   return (
-    <div className="flex flex-col gap-0 mb-14 font-bold">
-      {grid.map((row, i) => (
-        <div key={i} className="flex justify-center gap-1 hexgrid-row">
-          {row.map((letter, j) => (
-            <motion.div
-              className={`hex-4 w-24 h-24 flex items-center justify-center text-2xl shadow-md cursor-pointer ${getClass(
-                letter
-              )}`}
-              key={letter + "-" + j}
-              onClick={() => onClickLetter?.(letter)}
-              whileTap={{ scale: 0.85 }}
-              transition={{ duration: 0.2 }}
-            >
-              {getLetterComponent(letter, j)}
-            </motion.div>
-          ))}
-        </div>
-      ))}
-    </div>
+    <>
+      <div className="flex flex-col gap-0 mb-14 font-bold">
+        {grid2.map((row, i) => (
+          <div key={i} className="flex justify-center gap-1 hexgrid-row">
+            {row.map((letter, j) => (
+              <motion.div
+                className={`hex-3 hex-3-${i}-${j} w-24 h-24 flex items-center justify-center text-2xl shadow-md cursor-pointer ${getClass(
+                  letter
+                )}`}
+                key={letter + "-" + j}
+                onClick={() => onClickLetter?.(letter)}
+                whileTap={{ scale: 0.85 }}
+                transition={{ duration: 0.2 }}
+              >
+                {getLetterComponent(letter, j)}
+              </motion.div>
+            ))}
+          </div>
+        ))}
+      </div>
+      {/* <div className="flex flex-col gap-0 mb-14 font-bold">
+        {grid.map((row, i) => (
+          <div key={i} className="flex justify-center gap-1 hexgrid-row">
+            {row.map((letter, j) => (
+              <motion.div
+                className={`hex-4 w-24 h-24 flex items-center justify-center text-2xl shadow-md cursor-pointer ${getClass(
+                  letter
+                )}`}
+                key={letter + "-" + j}
+                onClick={() => onClickLetter?.(letter)}
+                whileTap={{ scale: 0.85 }}
+                transition={{ duration: 0.2 }}
+              >
+                {getLetterComponent(letter, j)}
+              </motion.div>
+            ))}
+          </div>
+        ))}
+      </div> */}
+    </>
   );
 }

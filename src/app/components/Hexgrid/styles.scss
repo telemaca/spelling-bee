@@ -8,6 +8,27 @@
     0% 50%
   );
   clip-path: polygon(25% 5%, 75% 5%, 100% 50%, 75% 95%, 25% 95%, 0% 50%);
+  position: relative;
+}
+
+.hex-3-0-0 {
+  top: 47px;
+  left: 20px;
+}
+
+.hex-3-0-2 {
+  top: 47px;
+  right: 20px;
+}
+
+.hex-3-2-0 {
+  bottom: 47px;
+  left: 20px;
+}
+
+.hex-3-2-2 {
+  bottom: 47px;
+  right: 20px;
 }
 
 .hex-4 {
@@ -23,10 +44,16 @@
 }
 
 .custom-input {
-  border-bottom: 1px solid white;
   width: 300px;
-}
 
-.hexgrid-row {
-  margin: -5px;
+  &::after {
+    content: "";
+    width: 2px;
+    height: 30px;
+    bottom: 0px;
+    left: o;
+    position: relative;
+    background-color: oklch(79.5% 0.184 86.047);
+    animation: fadeIn 1s infinite;
+  }
 }

@@ -184,11 +184,17 @@ export default function WordFinder() {
 
   return (
     <PrimeReactProvider>
-      <div className="p-6 max-w-xl m-auto flex flex-col font-sans pt-30 relative">
-        {/* <h1 className="text-2xl font-bold mb-16 m-auto">Panal de Letras</h1> */}
+      <div className="p-6 max-w-xl m-auto flex flex-col font-sans relative">
+        <div className="flex gap-4">
+          <h1 className="font-semibold mb-2">Puntos: {points}</h1>
+          <h2 className="font-semibold mb-2">Puntos posibles: {maxPoints}</h2>
+        </div>
+
+        <WordList wordList={foundWords} />
+
         <motion.div
           key={errorCount}
-          className="mb-18 m-auto"
+          className="mb-4 m-auto pt-26"
           animate={{ x: [0, -8, 8, -6, 6, -4, 4, 0] }}
           transition={{ duration: 0.6 }}
         >
@@ -197,7 +203,7 @@ export default function WordFinder() {
               feedback.on && feedback.type !== "success" && "fade-in"
             } opacity-0 ${getFeedbackColor(
               feedback.type
-            )} text-white w-30 text-sm rounded text-center p-2 m-auto mb-6 mh-16`}
+            )} text-white w-30 text-xs rounded text-center p-2 m-auto mb-6 mh-16`}
           >
             {feedback.message}
           </div>
@@ -243,30 +249,22 @@ export default function WordFinder() {
         <div className="flex gap-4 m-auto">
           <button
             onClick={handleDelete}
-            className="bg-white text-black px-4 py-2 rounded-full text-sm"
+            className="px-4 py-2 rounded-full text-sm custom-button"
           >
             Borrar
           </button>
 
           <button
             onClick={shuffleLetters}
-            className="pi pi-refresh bg-white text-black px-4 py-2 rounded-full text-sm"
+            className="pi pi-refresh rounded-full text-sm custom-button w-10 h-10"
           ></button>
 
           <button
             onClick={handleSearch}
-            className="bg-white text-black px-4 py-2 rounded-full text-sm"
+            className="px-4 py-2 rounded-full text-sm custom-button"
           >
-            Aplicar
+            Enter
           </button>
-        </div>
-        <div className="mt-6">
-          <h1 className="font-semibold mb-2">Puntos: {points}</h1>
-          <h2 className="font-semibold mb-2">Puntos posibles: {maxPoints}</h2>
-          <h2 className="font-semibold mb-2">
-            Palabras posibles: {possibleWords.length}
-          </h2>
-          <WordList wordList={foundWords} />
         </div>
       </div>
     </PrimeReactProvider>

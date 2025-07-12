@@ -6,19 +6,21 @@
 }
 
 .custom-accordeon {
-  position: absolute;
-  top: 20px;
+  position: fixed;
+  top: 80px;
   width: 90%;
-  border: 1px solid white;
+  max-width: 500px;
+  border: 1px solid #676666;
   border-radius: 6px;
   padding: 10px 20px;
   height: 45px;
   transition: height 1s;
   overflow: hidden;
-  background-color: black;
+  background-color: #171717;
+  z-index: 3;
 
   &.expand {
-    height: 500px;
+    height: 80vh;
   }
 
   .header-container {
