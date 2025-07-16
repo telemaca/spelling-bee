@@ -11,8 +11,10 @@ import {
 // import { useDailyPanal } from "./hooks/usedailyPanal";
 import HexGrid from "./components/Hexgrid/Hexgrid";
 import WordList from "./components/WordsList/WordsList";
+import RankTimeline from "./components/Scoring/Scoring";
 
 import "primeicons/primeicons.css";
+import "primereact/resources/themes/lara-light-cyan/theme.css";
 
 const LOCAL_KEY = "gameState";
 
@@ -192,10 +194,12 @@ export default function WordFinder() {
   return (
     <PrimeReactProvider>
       <div className="p-6 max-w-xl m-auto flex flex-col font-sans relative">
-        <div className="flex gap-4">
+        {/* <div className="flex gap-4">
           <h1 className="font-semibold mb-2">Puntos: {points}</h1>
           <h2 className="font-semibold mb-2">Puntos posibles: {maxPoints}</h2>
-        </div>
+        </div> */}
+
+        <RankTimeline currentScore={points} totalPoints={maxPoints * 0.2} />
 
         <WordList wordList={foundWords} />
 

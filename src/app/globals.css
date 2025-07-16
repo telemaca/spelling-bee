@@ -1,8 +1,7 @@
 @import "tailwindcss";
 @import "../app/components/Hexgrid/styles.scss";
 @import "../app/components/WordsList/styles.scss";
-
-:root {
+@import "../app/components/Scoring/styles.scss": root {
   --background: #ffffff;
   --foreground: #171717;
 }
