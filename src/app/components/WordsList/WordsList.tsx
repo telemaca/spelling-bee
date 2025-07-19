@@ -7,7 +7,6 @@ type WordListProps = {
 export default function WordList({ wordList }: WordListProps) {
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const [title, setTitle] = useState<string>(wordList.join(" "));
-  const wordListCopy = [...wordList];
 
   const handleTabOpen = () => {
     setTitle(`Encontraste ${wordList.length} palabras`);
@@ -23,6 +22,19 @@ export default function WordList({ wordList }: WordListProps) {
     setTitle(wordList.join(" "));
   }, [wordList]);
 
+  function splitIntoColumns(words: string[]): string[][] {
+    const sorted = [...words].sort();
+    const columns: string[][] = [];
+
+    for (let i = 0; i < sorted.length; i += 15) {
+      columns.push(sorted.slice(i, i + 15));
+    }
+
+    return columns;
+  }
+
+  const wordListColumns = splitIntoColumns(wordList);
+
   return (
     <>
       <div className={`custom-accordeon ${isOpen && "expand"}`}>
@@ -35,13 +47,15 @@ export default function WordList({ wordList }: WordListProps) {
           )}
         </div>
         <div className={`words-list ${isOpen && "shown"}`}>
-          <ul>
-            {wordListCopy.sort().map((word, i) => (
-              <li key={i} className="found-word">
-                {word}
-              </li>
-            ))}
-          </ul>
+          {wordListColumns.map((column, i) => (
+            <ul key={i} className="found-words-column">
+              {column.map((word, j) => (
+                <li key={j} className="found-word">
+                  {word}
+                </li>
+              ))}
+            </ul>
+          ))}
         </div>
       </div>
     </>

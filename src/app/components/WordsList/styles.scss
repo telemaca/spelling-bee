@@ -52,13 +52,18 @@
 
     &.shown {
       opacity: 1;
-    }
+      display: flex;
 
-    .found-word {
-      border-bottom: 1px solid gray;
-      padding-bottom: 1px;
-      margin-top: 4px;
-      width: 50%;
+      ul {
+        width: 50%;
+
+        .found-word {
+          border-bottom: 1px solid gray;
+          padding-bottom: 1px;
+          margin-top: 4px;
+          width: 95%;
+        }
+      }
     }
   }
 }
