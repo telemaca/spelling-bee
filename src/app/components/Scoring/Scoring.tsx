@@ -97,7 +97,7 @@ export default function RankTimeline({ totalPoints, currentScore }: Props) {
                 <div className="text-xs text-gray-500">{item.minScore}</div>
               </div>
             ) : (
-              <div className="p-2 flex justify-between">
+              <div className="flex justify-between">
                 <strong className="text-xs">{item.rank}</strong>
                 <div className="text-xs text-gray-500">{item.minScore}</div>
               </div>
@@ -110,7 +110,7 @@ export default function RankTimeline({ totalPoints, currentScore }: Props) {
               </div>
             ) : (
               <div
-                className={`w-3 h-3 rounded-full border-2 ${
+                className={`w-3 h-3 rounded-full border-2 ml-[12px] ${
                   item.achieved
                     ? "bg-yellow-500 border-yellow-700"
                     : "bg-gray-300 border-gray-400"

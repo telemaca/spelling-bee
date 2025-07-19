@@ -225,7 +225,7 @@ export default function WordFinder() {
               onKeyDown={handleEnter}
             />
             <motion.div
-              className="flex gap-1 flex-wrap justify-center min-h-10 custom-input"
+              className="flex flex-wrap justify-center min-h-10 custom-input"
               key={errorCount}
               animate={{ x: [0, -8, 8, -6, 6, -4, 4, 0] }}
               transition={{ duration: 0.6 }}
