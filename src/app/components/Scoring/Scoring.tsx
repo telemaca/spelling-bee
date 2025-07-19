@@ -1,4 +1,4 @@
-import React, { useRef, useState, useEffect } from "react";
+import React, { useRef } from "react";
 import { Timeline } from "primereact/timeline";
 import { OverlayPanel } from "primereact/overlaypanel";
 
@@ -42,7 +42,6 @@ export default function RankTimeline({ totalPoints, currentScore }: Props) {
 
   const thresholds = getSpellingBeeRanks(totalPoints);
   const currentRank = getCurrentRank(thresholds, currentScore);
-  // const [rank, setRank] = useState(currentRank);
 
   const timelineData = thresholds.map((item) => ({
     ...item,
@@ -53,10 +52,6 @@ export default function RankTimeline({ totalPoints, currentScore }: Props) {
   const op = useRef<OverlayPanel>(null);
 
   const timelineDataCopy = [...timelineData];
-
-  // useEffect(() => {
-  //   setRank(currentRank);
-  // }, [currentRank]);
 
   return (
     <>
