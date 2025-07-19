@@ -1,4 +1,4 @@
-import React, { useRef } from "react";
+import React, { useRef, useState, useEffect } from "react";
 import { Timeline } from "primereact/timeline";
 import { OverlayPanel } from "primereact/overlaypanel";
 
@@ -26,11 +26,11 @@ export default function RankTimeline({ totalPoints, currentScore }: Props) {
       ["Genio/a", 0.7],
       ["Espectacular", 0.5],
       ["Excelente", 0.4],
-      ["Genial", 0.25],
-      ["Muy bien", 0.15],
+      ["Bárbaro", 0.25],
+      ["Genial", 0.15],
       ["Bien", 0.08],
       ["Subiendo", 0.05],
-      ["Buen comienzo", 0.02],
+      ["Comenzando", 0.02],
       ["Principiante", 0],
     ];
 
@@ -42,6 +42,7 @@ export default function RankTimeline({ totalPoints, currentScore }: Props) {
 
   const thresholds = getSpellingBeeRanks(totalPoints);
   const currentRank = getCurrentRank(thresholds, currentScore);
+  // const [rank, setRank] = useState(currentRank);
 
   const timelineData = thresholds.map((item) => ({
     ...item,
@@ -53,10 +54,20 @@ export default function RankTimeline({ totalPoints, currentScore }: Props) {
 
   const timelineDataCopy = [...timelineData];
 
+  // useEffect(() => {
+  //   setRank(currentRank);
+  // }, [currentRank]);
+
   return (
     <>
       <div className="flex">
-        <div className="current-rank">{currentRank}</div>
+        <div className="current-rank wave-text" key={currentRank}>
+          {currentRank.split("").map((e, i) => (
+            <span style={{ animationDelay: `${(i + 1) * 0.1}s` }} key={i}>
+              {e}
+            </span>
+          ))}
+        </div>
         <div
           className="custom-timeline"
           onClick={(e) => op?.current?.toggle(e)}
@@ -77,28 +88,6 @@ export default function RankTimeline({ totalPoints, currentScore }: Props) {
             </div>
           ))}
         </div>
-        {/* <Timeline
-          value={timelineDataCopy.reverse()}
-          className="custom-timeline-horizontal"
-          layout="horizontal"
-          onClick={(e) => op?.current?.toggle(e)}
-          style={{ display: "flex", flexDirection: "row" }}
-          marker={(item) =>
-            item.isCurrent ? (
-              <div className="w-[60px] h-[30px] flex items-center justify-center rounded-full bg-yellow-400 text-black border-1 border-yellow-600 text-sm">
-                {currentScore}
-              </div>
-            ) : (
-              <div
-                className={`w-3 h-3 rounded-full border-1 ${
-                  item.achieved
-                    ? "bg-yellow-500 border-yellow-700"
-                    : "bg-gray-300 border-gray-400"
-                }`}
-              />
-            )
-          }
-        /> */}
       </div>
       <OverlayPanel className="w-9/10" ref={op}>
         <Timeline

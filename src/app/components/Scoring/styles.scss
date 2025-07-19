@@ -17,7 +17,7 @@
   font-weight: 800;
   font-family: "Lucida Sans", "Lucida Sans Regular", "Lucida Grande",
     "Lucida Sans Unicode", Geneva, Verdana, sans-serif;
-  min-width: 70px;
+  min-width: 85px;
   font-size: 12px;
 }
 
@@ -85,5 +85,26 @@
     &.event-number2 {
       right: 87.5%;
     }
+
+    &.event-number1 {
+      right: 100%;
+    }
+  }
+}
+
+.wave-text {
+  span {
+    display: inline-block;
+    animation: wave 0.75s ease-in-out;
+  }
+}
+
+@keyframes wave {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-20px);
   }
 }
