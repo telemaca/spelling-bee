@@ -8,7 +8,7 @@ import {
   calculatePoints,
   // getDailyPanal,
 } from "../utils/wordFinder";
-// import { useDailyPanal } from "./hooks/usedailyPanal";
+import { usePanalDelDia } from "./hooks/usedailyPanal";
 import HexGrid from "./components/Hexgrid/Hexgrid";
 import WordList from "./components/WordsList/WordsList";
 import RankTimeline from "./components/Scoring/Scoring";
@@ -28,6 +28,10 @@ export default function WordFinder() {
   const [errorCount, setErrorCount] = useState<number>(0);
   const [shuffleId, setShuffleId] = useState<number>(0);
   const [isVisible, setIsVisible] = useState<boolean>(true);
+  const [isLoading, setIsLoading] = useState<boolean>(true);
+
+  const panal = usePanalDelDia();
+  console.log("panal", panal);
 
   type FeedbackType = "success" | "short" | "error" | "existing";
   interface FeedbackState {
@@ -75,6 +79,7 @@ export default function WordFinder() {
           0
         );
         setMaxPoints(mapPoints);
+        setIsLoading(false);
       });
   }, []);
 
@@ -193,91 +198,90 @@ export default function WordFinder() {
 
   return (
     <PrimeReactProvider>
-      <div className="p-6 max-w-xl m-auto flex flex-col font-sans relative">
-        {/* <div className="flex gap-4">
-          <h1 className="font-semibold mb-2">Puntos: {points}</h1>
-          <h2 className="font-semibold mb-2">Puntos posibles: {maxPoints}</h2>
-        </div> */}
-
-        <RankTimeline currentScore={points} totalPoints={maxPoints * 0.2} />
-
-        <WordList wordList={foundWords} />
-
-        <div className="mb-4 m-auto pt-26">
-          <div
-            className={`${
-              feedback.on && feedback.type !== "success" && "fade-in"
-            } opacity-0 ${getFeedbackColor(
-              feedback.type
-            )} text-white w-30 text-xs rounded text-center p-2 m-auto mb-6 mh-16`}
-          >
-            {feedback.message}
+      {isLoading ? (
+        <div className="p-6 max-w-xl m-auto flex flex-col font-sans relative">
+          <p>Cargando...</p>
+        </div>
+      ) : (
+        <div className="p-6 max-w-xl m-auto flex flex-col font-sans relative">
+          <RankTimeline currentScore={points} totalPoints={maxPoints * 0.2} />
+          <WordList wordList={foundWords} />
+          <div className="mb-4 m-auto pt-26">
+            <div
+              className={`${
+                feedback.on && feedback.type !== "success" && "fade-in"
+              } opacity-0 ${getFeedbackColor(
+                feedback.type
+              )} text-white w-30 text-xs rounded text-center p-2 m-auto mb-6 mh-16`}
+            >
+              {feedback.message}
+            </div>
+            <input
+              type="text"
+              // ref={inputRef}
+              className="border p-2 ml-2 opacity-0 pointer-events-none absolute"
+              value={guessedWord}
+              onChange={(e) => setGuessedWord(e.target.value)}
+              onKeyDown={handleEnter}
+            />
+            <motion.div
+              className="flex gap-1 flex-wrap justify-center min-h-10 custom-input"
+              key={errorCount}
+              animate={{ x: [0, -8, 8, -6, 6, -4, 4, 0] }}
+              transition={{ duration: 0.6 }}
+            >
+              <AnimatePresence>
+                {guessedWord.split("").map((letter, i) => (
+                  <motion.div
+                    key={i}
+                    initial={{ scale: 1, opacity: 0 }}
+                    animate={{ scale: 1, opacity: 1 }}
+                    exit={{}}
+                    transition={{
+                      duration: 0.5,
+                      type: "spring",
+                      stiffness: 300,
+                      damping: 20,
+                    }}
+                    className={`font-bold text-2xl ${
+                      letter === centerLetter ? "text-yellow-400" : ""
+                    }`}
+                  >
+                    {letter.toUpperCase()}
+                  </motion.div>
+                ))}
+              </AnimatePresence>
+            </motion.div>
           </div>
-          <input
-            type="text"
-            // ref={inputRef}
-            className="border p-2 ml-2 opacity-0 pointer-events-none absolute"
-            value={guessedWord}
-            onChange={(e) => setGuessedWord(e.target.value)}
-            onKeyDown={handleEnter}
+          <HexGrid
+            letters={gridLetters}
+            centerLetter={centerLetter}
+            isVisible={isVisible}
+            shuffleVersion={shuffleId}
+            onClickLetter={handleOnClickLetter}
           />
-          <motion.div
-            className="flex gap-1 flex-wrap justify-center min-h-10 custom-input"
-            key={errorCount}
-            animate={{ x: [0, -8, 8, -6, 6, -4, 4, 0] }}
-            transition={{ duration: 0.6 }}
-          >
-            <AnimatePresence>
-              {guessedWord.split("").map((letter, i) => (
-                <motion.div
-                  key={i}
-                  initial={{ scale: 1, opacity: 0 }}
-                  animate={{ scale: 1, opacity: 1 }}
-                  exit={{}}
-                  transition={{
-                    duration: 0.5,
-                    type: "spring",
-                    stiffness: 300,
-                    damping: 20,
-                  }}
-                  className={`font-bold text-2xl ${
-                    letter === centerLetter ? "text-yellow-400" : ""
-                  }`}
-                >
-                  {letter.toUpperCase()}
-                </motion.div>
-              ))}
-            </AnimatePresence>
-          </motion.div>
-        </div>
-        <HexGrid
-          letters={gridLetters}
-          centerLetter={centerLetter}
-          isVisible={isVisible}
-          shuffleVersion={shuffleId}
-          onClickLetter={handleOnClickLetter}
-        />
-        <div className="flex gap-4 m-auto">
-          <button
-            onClick={handleDelete}
-            className="px-4 py-2 rounded-full text-sm custom-button"
-          >
-            Borrar
-          </button>
+          <div className="flex gap-4 m-auto">
+            <button
+              onClick={handleDelete}
+              className="px-4 py-2 rounded-full text-sm custom-button"
+            >
+              Borrar
+            </button>
 
-          <button
-            onClick={shuffleLetters}
-            className="pi pi-refresh rounded-full text-xl custom-button custom-button-icon w-12 h-12"
-          ></button>
+            <button
+              onClick={shuffleLetters}
+              className="pi pi-refresh rounded-full text-xl custom-button custom-button-icon w-12 h-12"
+            ></button>
 
-          <button
-            onClick={handleSearch}
-            className="px-4 py-2 rounded-full text-sm custom-button"
-          >
-            Enter
-          </button>
+            <button
+              onClick={handleSearch}
+              className="px-4 py-2 rounded-full text-sm custom-button"
+            >
+              Enter
+            </button>
+          </div>
         </div>
-      </div>
+      )}
     </PrimeReactProvider>
   );
 }

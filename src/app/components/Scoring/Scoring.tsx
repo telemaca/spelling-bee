@@ -18,7 +18,7 @@ export default function RankTimeline({ totalPoints, currentScore }: Props) {
     currentScore: number
   ): string {
     const reached = thresholds.filter((r) => currentScore >= r.minScore);
-    return reached.length > 0 ? reached[0].rank : "Beginner"; // el primero es el de más alto nivel
+    return reached.length > 0 ? reached[0].rank : "Principiante"; // el primero es el de más alto nivel
   }
 
   function getSpellingBeeRanks(totalPoints: number): RankThresholds[] {
@@ -55,31 +55,56 @@ export default function RankTimeline({ totalPoints, currentScore }: Props) {
 
   return (
     <>
-      <Timeline
-        value={timelineDataCopy.reverse()}
-        layout="horizontal"
-        onClick={(e) => op?.current?.toggle(e)}
-        marker={(item) =>
-          item.isCurrent ? (
-            <div className="w-[60px] h-[30px] flex items-center justify-center rounded-full bg-yellow-400 text-black border-1 border-yellow-600 text-sm">
-              {currentScore}
-            </div>
-          ) : (
+      <div className="flex">
+        <div className="current-rank">{currentRank}</div>
+        <div
+          className="custom-timeline"
+          onClick={(e) => op?.current?.toggle(e)}
+        >
+          <div className="timeline-line"></div>
+          {timelineDataCopy.reverse().map((item, i) => (
             <div
-              className={`w-3 h-3 rounded-full border-1 ${
+              key={i}
+              className={`timeline-event event-number${i + 1} ${
+                item.isCurrent && "current-event"
+              } ${
                 item.achieved
                   ? "bg-yellow-500 border-yellow-700"
-                  : "bg-gray-300 border-gray-400"
+                  : "bg-gray-400 border-gray-400"
               }`}
-            />
-          )
-        }
-      />
+            >
+              {item.isCurrent ? currentScore : ""}
+            </div>
+          ))}
+        </div>
+        {/* <Timeline
+          value={timelineDataCopy.reverse()}
+          className="custom-timeline-horizontal"
+          layout="horizontal"
+          onClick={(e) => op?.current?.toggle(e)}
+          style={{ display: "flex", flexDirection: "row" }}
+          marker={(item) =>
+            item.isCurrent ? (
+              <div className="w-[60px] h-[30px] flex items-center justify-center rounded-full bg-yellow-400 text-black border-1 border-yellow-600 text-sm">
+                {currentScore}
+              </div>
+            ) : (
+              <div
+                className={`w-3 h-3 rounded-full border-1 ${
+                  item.achieved
+                    ? "bg-yellow-500 border-yellow-700"
+                    : "bg-gray-300 border-gray-400"
+                }`}
+              />
+            )
+          }
+        /> */}
+      </div>
       <OverlayPanel className="w-9/10" ref={op}>
         <Timeline
           value={timelineData}
           align="left"
-          className="custom-timeline"
+          className="custom-timeline-vertical"
           // opposite={(item) => null}
           content={(item) =>
             item.isCurrent ? (

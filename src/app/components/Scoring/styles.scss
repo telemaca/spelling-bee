@@ -1,5 +1,89 @@
-.custom-timeline {
+.custom-timeline-vertical {
   .p-timeline-event-opposite {
     display: none !important;
+  }
+}
+
+.custom-timeline-horizontal {
+  .p-timeline-event-opposite,
+  .p-timeline-event-content {
+    padding: 0 !important;
+  }
+}
+
+.current-rank {
+  align-self: center;
+  margin-right: 24px;
+  font-weight: 800;
+  font-family: "Lucida Sans", "Lucida Sans Regular", "Lucida Grande",
+    "Lucida Sans Unicode", Geneva, Verdana, sans-serif;
+  min-width: 70px;
+  font-size: 12px;
+}
+
+.custom-timeline {
+  position: relative;
+  height: 36px;
+  width: 100%;
+
+  .timeline-line {
+    height: 1px;
+    width: 100%;
+    background-color: rgb(83, 78, 78);
+    position: absolute;
+    top: 50%;
+  }
+
+  .timeline-event {
+    height: 6px;
+    width: 6px;
+    border-radius: 50%;
+    position: absolute;
+    top: 43%;
+
+    &.current-event {
+      height: 24px;
+      width: 24px;
+      top: 18%;
+      margin-right: -10px;
+      font-size: 10px;
+      color: black;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    &.event-number9 {
+      right: 0;
+      border-radius: 0;
+    }
+
+    &.event-number8 {
+      right: 12.5%;
+    }
+
+    &.event-number7 {
+      right: 25%;
+    }
+
+    &.event-number6 {
+      right: 37.5%;
+    }
+
+    &.event-number5 {
+      right: 50%;
+    }
+
+    &.event-number4 {
+      right: 62.5%;
+    }
+
+    &.event-number3 {
+      right: 75%;
+    }
+
+    &.event-number2 {
+      right: 87.5%;
+    }
   }
 }
