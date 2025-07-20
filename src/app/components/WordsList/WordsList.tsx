@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from "react";
 
+import WordSlider from "./WordSlider";
+
 type WordListProps = {
   wordList: string[];
 };
@@ -46,16 +48,8 @@ export default function WordList({ wordList }: WordListProps) {
             <div className="pi pi-chevron-down" onClick={handleTabOpen} />
           )}
         </div>
-        <div className={`words-list ${isOpen && "shown"}`}>
-          {wordListColumns.map((column, i) => (
-            <ul key={i} className="found-words-column">
-              {column.map((word, j) => (
-                <li key={j} className="found-word">
-                  {word}
-                </li>
-              ))}
-            </ul>
-          ))}
+        <div className={`words-list ${isOpen && "shown"} `}>
+          <WordSlider columns={wordListColumns} />
         </div>
       </div>
     </>

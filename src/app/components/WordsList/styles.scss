@@ -53,6 +53,7 @@
     &.shown {
       opacity: 1;
       display: flex;
+      height: 70vh;
 
       ul {
         width: 50%;
@@ -64,6 +65,21 @@
           width: 95%;
         }
       }
+    }
+  }
+}
+
+.slider-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+
+  .paginator {
+    border: 1px solid rgb(70, 67, 67);
+
+    &.current-page {
+      border: none;
+      background-color: rgb(255, 255, 255);
     }
   }
 }
