@@ -1,4 +1,3 @@
-// app/api/panal/route.ts
 import { NextResponse } from "next/server";
 
 import { getLocalDateString } from "@/utils";
@@ -14,6 +13,22 @@ const panales: Record<string, { letras: string; central: string }> = {
   },
   "2025-07-21": {
     letras: "GESTION",
+    central: "S",
+  },
+  "2025-07-22": {
+    letras: "GDOBAEN",
+    central: "A",
+  },
+  "2025-07-23": {
+    letras: "LTSBREA",
+    central: "S",
+  },
+  "2025-07-24": {
+    letras: "TUNCEAI",
+    central: "E",
+  },
+  "2025-07-25": {
+    letras: "TINOESG",
     central: "S",
   },
 };
