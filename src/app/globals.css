@@ -2,6 +2,7 @@
 @import "../app/components/Hexgrid/styles.scss";
 @import "../app/components/WordsList/styles.scss";
 @import "../app/components/Scoring/styles.scss";
+@import "../app/components/Loading/styles.scss";
 
 root {
   --background: #171717;

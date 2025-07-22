@@ -20,6 +20,7 @@ import { usePanalDelDia } from "./hooks/usedailyPanal";
 import HexGrid from "./components/Hexgrid/Hexgrid";
 import WordList from "./components/WordsList/WordsList";
 import RankTimeline from "./components/Scoring/Scoring";
+import Loading from "./components/Loading/Loading";
 
 import "primeicons/primeicons.css";
 import "primereact/resources/themes/lara-light-cyan/theme.css";
@@ -204,9 +205,7 @@ export default function WordFinder() {
   return (
     <PrimeReactProvider>
       {!isLoaded ? (
-        <div className="p-6 max-w-xl m-auto flex flex-col font-sans relative">
-          <p>Cargando...</p>
-        </div>
+        <Loading />
       ) : (
         <div className="p-6 max-w-xl m-auto flex flex-col font-sans relative">
           <RankTimeline currentScore={points} totalPoints={maxPoints * 0.2} />
