@@ -41,7 +41,7 @@ export default function HexGrid({
               duration: 0.6,
             }}
           >
-            {letter.toUpperCase()}
+            {letter?.toUpperCase()}
           </motion.span>
         );
       }

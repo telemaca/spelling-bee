@@ -3,12 +3,20 @@
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { PrimeReactProvider } from "primereact/api";
+
 import {
+  shuffleArray,
+  getFeedbackColor,
+  saveGameStatus,
+  loadGameStatus,
   findValidWords,
   calculatePoints,
-  // getDailyPanal,
-} from "../utils/wordFinder";
+  getLocalDateString,
+  isPangram,
+} from "@/utils";
+
 import { usePanalDelDia } from "./hooks/usedailyPanal";
+
 import HexGrid from "./components/Hexgrid/Hexgrid";
 import WordList from "./components/WordsList/WordsList";
 import RankTimeline from "./components/Scoring/Scoring";
@@ -16,11 +24,30 @@ import RankTimeline from "./components/Scoring/Scoring";
 import "primeicons/primeicons.css";
 import "primereact/resources/themes/lara-light-cyan/theme.css";
 
-const LOCAL_KEY = "gameState";
-
 export default function WordFinder() {
+  const panal = usePanalDelDia();
+
+  const [centerLetter, setCenterLetter] = useState("");
+  const [letterArray, setLetterArray] = useState([""]);
+  const [gridLetters, setGridLetters] = useState<string[]>([""]);
+
+  // Cuando llega el panal, seteamos estados derivados
+  useEffect(() => {
+    if (panal) {
+      const central = panal.central.toLowerCase();
+      const lettersString = panal.letras;
+      const arr = lettersString.toLowerCase().split("");
+      const lettersWithoutCenter = arr.filter(
+        (letter) => letter !== panal.central.toLowerCase()
+      );
+
+      setCenterLetter(central);
+      setLetterArray(arr);
+      setGridLetters(lettersWithoutCenter);
+    }
+  }, [panal]);
+
   const [guessedWord, setGuessedWord] = useState("");
-  const [centerLetter] = useState("m");
   const [possibleWords, setPossibleWords] = useState<string[]>([]);
   const [foundWords, setFoundWords] = useState<string[]>([]);
   const [points, setPoints] = useState<number>(0);
@@ -28,10 +55,8 @@ export default function WordFinder() {
   const [errorCount, setErrorCount] = useState<number>(0);
   const [shuffleId, setShuffleId] = useState<number>(0);
   const [isVisible, setIsVisible] = useState<boolean>(true);
-  const [isLoading, setIsLoading] = useState<boolean>(true);
-
-  const panal = usePanalDelDia();
-  console.log("panal", panal);
+  const [isLoaded, setIsLoaded] = useState<boolean>(!!panal);
+  const today = getLocalDateString();
 
   type FeedbackType = "success" | "short" | "error" | "existing";
   interface FeedbackState {
@@ -46,42 +71,42 @@ export default function WordFinder() {
     type: "short",
   });
 
-  const [fixedLetters] = useState("roabgem");
-  const letterArray = fixedLetters.toLowerCase().split("");
-
-  const lettersWithoutCenter = letterArray.filter(
-    (letter) => letter !== centerLetter
-  );
-
-  const [gridLetters, setGridLetters] =
-    useState<string[]>(lettersWithoutCenter);
-
   useEffect(() => {
-    const stateOfGame = localStorage.getItem(LOCAL_KEY);
+    const stateOfGame = loadGameStatus(today);
     if (stateOfGame) {
-      const parsedData = JSON.parse(stateOfGame);
-      setFoundWords(parsedData.words);
-      setPoints(parsedData.points);
+      setFoundWords(stateOfGame.words);
+      setPoints(stateOfGame.points);
     }
     // Cargamos las palabras desde un endpoint local
-    fetch("/spanish-words.txt")
-      .then((res) => res.text())
-      .then((text) => {
-        const allWords = text.split("\n").map((w) => w.trim().toLowerCase());
-        const words = findValidWords(
-          letterArray,
-          centerLetter.toLowerCase(),
-          allWords
-        );
-        setPossibleWords(words);
-        const mapPoints = words.reduce(
-          (sum, word) => sum + calculatePoints(word, letterArray),
-          0
-        );
-        setMaxPoints(mapPoints);
-        setIsLoading(false);
-      });
-  }, []);
+    if (letterArray.length > 1) {
+      fetch("/spanish-words.txt")
+        .then((res) => res.text())
+        .then((text) => {
+          const allWords = text.split("\n").map((w) => w.trim().toLowerCase());
+          const words = findValidWords(
+            letterArray,
+            centerLetter.toLowerCase(),
+            allWords
+          );
+          setPossibleWords(words);
+          const mapPoints = words.reduce(
+            (sum, word) => sum + calculatePoints(word, letterArray),
+            0
+          );
+          setMaxPoints(mapPoints);
+          setIsLoaded(true);
+        });
+    }
+  }, [letterArray]);
+
+  const setSuccesMsg = (guessedWord: string, wordPoints: number) => {
+    const pangram = isPangram(guessedWord, letterArray, centerLetter);
+    const pointsMsg = `+ ${wordPoints} ${wordPoints > 1 ? "puntos" : "punto"}`;
+    if (pangram) {
+      return "¡Pangrama!" + " +" + wordPoints;
+    }
+    return pointsMsg;
+  };
 
   const handleSearch = () => {
     if (guessedWord.length < 4) {
@@ -98,16 +123,18 @@ export default function WordFinder() {
           const wordPoints = calculatePoints(guessedWord, letterArray);
           setFeedback({
             on: true,
-            message: `+ ${wordPoints} ${wordPoints > 1 ? "puntos" : "punto"}`,
+            message: setSuccesMsg(guessedWord, wordPoints),
             type: "success",
           });
           setFoundWords([guessedWord, ...foundWords]);
           setPoints(points + wordPoints);
+
           const gameState = {
             words: [guessedWord, ...foundWords],
             points: points + wordPoints,
           };
-          localStorage.setItem(LOCAL_KEY, JSON.stringify(gameState));
+
+          saveGameStatus(today, gameState);
         } else {
           //! PALABRA YA ENCONTRADA
           setErrorCount((prev) => prev + 1);
@@ -165,15 +192,6 @@ export default function WordFinder() {
     setGuessedWord((prev) => prev + letter);
   };
 
-  function shuffleArray<T>(array: T[]): T[] {
-    const arr = [...array];
-    for (let i = arr.length - 1; i > 0; i--) {
-      const j = Math.floor(Math.random() * (i + 1));
-      [arr[i], arr[j]] = [arr[j], arr[i]];
-    }
-    return arr;
-  }
-
   const shuffleLetters = () => {
     setIsVisible(false);
     setShuffleId(shuffleId + 1);
@@ -183,22 +201,9 @@ export default function WordFinder() {
     }, 300);
   };
 
-  const getFeedbackColor = (feedbackType: string) => {
-    switch (feedbackType) {
-      case "success":
-        return "bg-green-500 grow-in";
-      case "error":
-        return "bg-red-500";
-      case "existing":
-        return "bg-orange-400";
-      case "short":
-        return "bg-gray-500";
-    }
-  };
-
   return (
     <PrimeReactProvider>
-      {isLoading ? (
+      {!isLoaded ? (
         <div className="p-6 max-w-xl m-auto flex flex-col font-sans relative">
           <p>Cargando...</p>
         </div>

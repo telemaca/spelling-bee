@@ -1,37 +1,42 @@
 import { useEffect, useState } from "react";
 
+import { getLocalDateString } from "@/utils";
+
 type Panal = {
-  letras: string[];
+  letras: string;
   central: string;
-  fecha: string;
+  date: string;
 };
 
-const STORAGE_KEY = "panalDelDia";
-
-export function usePanalDelDia() {
+export const usePanalDelDia = (): Panal | null => {
   const [panal, setPanal] = useState<Panal | null>(null);
+  const STORAGE_KEY = "panalDelDia";
 
   useEffect(() => {
-    const hoy = new Date().toISOString().slice(0, 10);
+    const fetchPanal = async () => {
+      const today = getLocalDateString();
 
-    // Ver si ya está en localStorage
-    const guardado = localStorage.getItem(STORAGE_KEY);
-    if (guardado) {
-      const parsed = JSON.parse(guardado);
-      if (parsed.fecha === hoy) {
-        setPanal(parsed);
-        return;
-      }
-    }
+      try {
+        const saved = localStorage.getItem(STORAGE_KEY);
+        if (saved) {
+          const parsed = JSON.parse(saved);
+          if (parsed.date === today) {
+            setPanal(parsed);
+            return;
+          }
+        }
 
-    // Si no está o es de otra fecha, fetch
-    fetch("/api/panal")
-      .then((res) => res.json())
-      .then((data: Panal) => {
+        const response = await fetch("/api/panal");
+        const data: Panal = await response.json();
         setPanal(data);
         localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
-      });
+      } catch (error) {
+        console.error("Error fetching panal:", error);
+      }
+    };
+
+    fetchPanal();
   }, []);
 
   return panal;
-}
+};

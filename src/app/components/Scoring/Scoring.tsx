@@ -1,5 +1,4 @@
 import React, { useRef } from "react";
-import { Timeline } from "primereact/timeline";
 import { OverlayPanel } from "primereact/overlaypanel";
 
 type RankThresholds = {
@@ -53,6 +52,31 @@ export default function RankTimeline({ totalPoints, currentScore }: Props) {
 
   const timelineDataCopy = [...timelineData];
 
+  const getPointsToNextLevel = () => {
+    const current = thresholds.find((e) => e.rank === currentRank);
+    if (!current) return null;
+    const currentPosition = thresholds.indexOf(current);
+    const minScoreNext = thresholds[currentPosition - 1].minScore;
+    return minScoreNext - currentScore;
+  };
+
+  const getPointsText = () => {
+    if (currentRank === "Genio/a") {
+      <span className="text-xs">¡Alcanzaste el máximo nivel!</span>;
+    }
+    return (
+      <span className="text-xs">
+        Próximo nivel: {getPointsToNextLevel()}; Genio/a:{" "}
+        {thresholds.find((e) => e.rank === "Genio/a")?.minScore}
+      </span>
+    );
+  };
+
+  const getCssClass = (isCurrent: boolean, isAchieved: boolean) => {
+    if (isCurrent) return "font-bold text-black";
+    return isAchieved ? "text-gray-500" : "text-gray-300";
+  };
+
   return (
     <>
       <div className="flex">
@@ -84,41 +108,46 @@ export default function RankTimeline({ totalPoints, currentScore }: Props) {
           ))}
         </div>
       </div>
-      <OverlayPanel className="w-9/10" ref={op}>
-        <Timeline
-          value={timelineData}
-          align="left"
-          className="custom-timeline-vertical"
-          // opposite={(item) => null}
-          content={(item) =>
-            item.isCurrent ? (
-              <div className="p-2 flex justify-between bg-yellow-400 rounded-full">
-                <strong className="text-black text-xs">{item.rank}</strong>
-                <div className="text-xs text-gray-500">{item.minScore}</div>
-              </div>
-            ) : (
-              <div className="flex justify-between">
-                <strong className="text-xs">{item.rank}</strong>
-                <div className="text-xs text-gray-500">{item.minScore}</div>
-              </div>
-            )
-          }
-          marker={(item) =>
-            item.isCurrent ? (
-              <div className="w-10 h-10 flex items-center justify-center rounded-full bg-yellow-400 text-black border-4 border-yellow-600 font-bold text-sm">
-                {currentScore}
-              </div>
-            ) : (
+      <OverlayPanel className="w-9/10 custom-overlay-panel" ref={op}>
+        <div>
+          <h3 className="font-bold text-gray-200 text-lg">Niveles</h3>
+          <p className="text-sm text-gray-200 mb-5">
+            Los niveles se calculan en función de un porcentaje del total
+            posible de puntos de cada cambinación de letras
+          </p>
+          <div className="custom-vertical-timeline">
+            <div className="cell cell-heading text-gray-200 font-bold text-xs">
+              <div className="left">Nivel</div>
+              <div className="right">Puntos mínimos</div>
+            </div>
+          </div>
+          <div className="custom-vertical-timeline ranks">
+            {timelineData.map((rank, i) => (
               <div
-                className={`w-3 h-3 rounded-full border-2 ml-[12px] ${
-                  item.achieved
-                    ? "bg-yellow-500 border-yellow-700"
-                    : "bg-gray-300 border-gray-400"
-                }`}
-              />
-            )
-          }
-        />
+                className={`cell ${rank.isCurrent ? "current-rank-event" : ""}`}
+                key={i}
+              >
+                {rank.isCurrent && (
+                  <div className="current-score--timeline">{currentScore}</div>
+                )}
+                <div className="left with-line">
+                  <p className={getCssClass(rank.isCurrent, rank.achieved)}>
+                    {rank.rank}
+                  </p>
+                  {rank.isCurrent && <span>{getPointsText()}</span>}
+                </div>
+                <div
+                  className={`right ${getCssClass(
+                    rank.isCurrent,
+                    rank.achieved
+                  )}`}
+                >
+                  {rank.minScore}
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
       </OverlayPanel>
     </>
   );

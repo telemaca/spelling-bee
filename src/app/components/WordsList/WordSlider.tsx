@@ -1,5 +1,7 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { motion, PanInfo } from "framer-motion";
+import { isPangram } from "@/utils";
+import { usePanalDelDia } from "@/app/hooks/usedailyPanal";
 
 type WordSliderProps = {
   columns: string[][];
@@ -7,7 +9,21 @@ type WordSliderProps = {
 };
 
 const WordSlider = ({ columns, columnsPerPage = 2 }: WordSliderProps) => {
+  const panal = usePanalDelDia();
+
   const [page, setPage] = useState(0);
+  const [centerLetter, setCenterLetter] = useState("");
+  const [letterArray, setLetterArray] = useState([""]);
+
+  useEffect(() => {
+    if (panal) {
+      const central = panal.central.toLowerCase();
+      const arr = panal.letras.toLowerCase().split("");
+
+      setCenterLetter(central);
+      setLetterArray(arr);
+    }
+  }, [panal]);
 
   const totalPages = Math.ceil(columns.length / columnsPerPage);
 
@@ -30,6 +46,14 @@ const WordSlider = ({ columns, columnsPerPage = 2 }: WordSliderProps) => {
   const visibleColumns = columns.slice(start, start + columnsPerPage);
   const arr = Array.from({ length: totalPages }, (_, i) => i);
 
+  const getWordClassName = (word: string) => {
+    const pangram = isPangram(word, letterArray, centerLetter);
+    if (pangram) {
+      return `text-sm found-word font-bold`;
+    }
+    return "text-sm found-word";
+  };
+
   return (
     <div className="relative w-full max-w-full slider-container">
       <motion.div
@@ -43,7 +67,7 @@ const WordSlider = ({ columns, columnsPerPage = 2 }: WordSliderProps) => {
         {visibleColumns.map((column, i) => (
           <ul key={i} className="flex flex-col min-w-[120px] gap-1">
             {column.map((word, j) => (
-              <li key={j} className="text-sm found-word">
+              <li key={j} className={getWordClassName(word)}>
                 {word}
               </li>
             ))}
