@@ -60,14 +60,19 @@ export default function RankTimeline({ totalPoints, currentScore }: Props) {
     return minScoreNext - currentScore;
   };
 
+  const getPointToGenius = () => {
+    const geniusScore = thresholds.find((e) => e.rank === "Genio/a")?.minScore;
+    if (!geniusScore) return null;
+    return geniusScore - currentScore;
+  };
+
   const getPointsText = () => {
     if (currentRank === "Genio/a") {
       <span className="text-xs">¡Alcanzaste el máximo nivel!</span>;
     }
     return (
       <span className="text-xs">
-        Próximo nivel: {getPointsToNextLevel()}; Genio/a:{" "}
-        {thresholds.find((e) => e.rank === "Genio/a")?.minScore}
+        Próximo nivel: {getPointsToNextLevel()}; Genio/a: {getPointToGenius()}
       </span>
     );
   };
@@ -130,7 +135,11 @@ export default function RankTimeline({ totalPoints, currentScore }: Props) {
                 {rank.isCurrent && (
                   <div className="current-score--timeline">{currentScore}</div>
                 )}
-                <div className="left with-line">
+                <div
+                  className={`left with-line ${
+                    rank.achieved ? "rank-achieved" : ""
+                  }`}
+                >
                   <p className={getCssClass(rank.isCurrent, rank.achieved)}>
                     {rank.rank}
                   </p>

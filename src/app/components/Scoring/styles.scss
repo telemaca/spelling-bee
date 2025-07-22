@@ -43,8 +43,14 @@
           display: block;
           height: 10px;
           width: 10px;
-          background-color: oklch(79.5% 0.184 86.047);
+          background-color: rgb(161, 158, 158);
           border-radius: 50%;
+        }
+
+        &.rank-achieved {
+          &::before {
+            background-color: oklch(79.5% 0.184 86.047);
+          }
         }
       }
     }
@@ -70,8 +76,8 @@
 
       .current-score--timeline {
         position: absolute;
-        left: 26px;
-        top: 10px;
+        left: 22px;
+        top: 14px;
         background-color: oklch(79.5% 0.184 86.047);
         font-weight: 700;
         z-index: 20;
