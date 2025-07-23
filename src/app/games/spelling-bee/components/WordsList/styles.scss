@@ -1,0 +1,85 @@
+.p-accordion-header-text,
+.header-text {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.custom-accordeon {
+  position: absolute;
+  top: 80px;
+  width: 90%;
+  max-width: 500px;
+  border: 1px solid #676666;
+  border-radius: 6px;
+  padding: 10px 20px;
+  height: 45px;
+  transition: height 0.3s;
+  overflow: hidden;
+  background-color: #171717;
+  z-index: 3;
+
+  &.expand {
+    height: 80vh;
+  }
+
+  .header-container {
+    position: relative;
+
+    .header-text {
+      width: 90%;
+
+      &.border-bottom {
+        border-bottom: 1px dashed white;
+        padding-bottom: 8px;
+      }
+    }
+  }
+
+  .pi-chevron-down,
+  .pi-chevron-up {
+    position: absolute;
+    right: -6px;
+    top: 2px;
+    font-size: 1.2rem;
+    cursor: pointer;
+  }
+
+  .words-list {
+    margin-top: 12px;
+    opacity: 0;
+    transition: opacity 1s;
+
+    &.shown {
+      opacity: 1;
+      display: flex;
+      height: 70vh;
+
+      ul {
+        width: 50%;
+
+        .found-word {
+          border-bottom: 1px solid gray;
+          padding-bottom: 1px;
+          margin-top: 4px;
+          width: 95%;
+        }
+      }
+    }
+  }
+}
+
+.slider-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+
+  .paginator {
+    border: 1px solid rgb(70, 67, 67);
+
+    &.current-page {
+      border: none;
+      background-color: rgb(255, 255, 255);
+    }
+  }
+}

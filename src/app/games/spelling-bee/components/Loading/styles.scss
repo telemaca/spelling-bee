@@ -1,0 +1,180 @@
+.body {
+  --c1: #470601;
+  --c2: #ffc436;
+  display: grid;
+  place-content: center;
+  height: 100vh;
+  box-sizing: border-box;
+  background-color: #f0b100;
+  overflow: hidden;
+}
+
+.loading-text {
+  color: #000;
+  font-weight: 700;
+  font-size: larger;
+  margin-top: 30px;
+  text-align: center;
+}
+
+@keyframes fly {
+  to {
+    translate: 0 -5%;
+  }
+}
+
+@keyframes blink {
+  2% {
+    scale: 1 0.2;
+  }
+  4%,
+  100% {
+    scale: 1;
+  }
+}
+
+@keyframes wing {
+  to {
+    transform: rotate(0deg);
+  }
+}
+
+.main-bee {
+  --s: 15%;
+  position: relative;
+  container-type: inline-size;
+  width: 45vmin;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  translate: 0 15%;
+  animation: fly 1s ease-in-out alternate infinite;
+  transform: scale(0.5);
+}
+
+.main-bee::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: linear-gradient(to bottom, var(--c1) 75%, #260300);
+  box-shadow: inset 0 60cqw 0 -40cqw var(--c2), inset 0 80cqw 0 -40cqw var(--c1),
+    inset 0 110cqw 0 -40cqw var(--c2);
+}
+
+.main-bee::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  box-shadow: inset -30cqw 0cqw 0 -20cqw rgb(255 255 255 / 50%);
+  mix-blend-mode: overlay;
+}
+
+/* HEAD */
+.head {
+  position: absolute;
+  z-index: -1;
+  top: 0;
+  left: 50%;
+  width: 65cqw;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background-color: var(--c1);
+  box-shadow: inset -27cqw 0cqw 0 -20cqw color-mix(in srgb, var(--c1), red 15%);
+  translate: -50% -45%;
+}
+
+.head::before,
+.head::after {
+  content: "";
+  position: absolute;
+  aspect-ratio: 1/1.5;
+  border-radius: 50%;
+  background-color: #fff;
+  animation: blink 3s infinite 1s;
+}
+
+.head::before {
+  top: 18%;
+  left: 25%;
+  width: 6cqw;
+}
+
+.head::after {
+  top: 14%;
+  right: 25%;
+  width: 9cqw;
+}
+
+/* ANTENNA */
+.antenna {
+  --b: 5cqw;
+  --a: 80deg;
+  position: absolute;
+  z-index: -2;
+  bottom: 45%;
+  left: -30%;
+  width: 45cqw;
+  aspect-ratio: 1;
+  padding: var(--b);
+  box-sizing: border-box;
+  border-radius: 50%;
+  background-color: var(--c1);
+  --_g: /var(--b) var(--b) no-repeat radial-gradient(closest-side at 50% 50%, #000
+        calc(100% - 1px), #0000);
+  mask: top var(--_g),
+    calc(50% + 50% * sin(var(--a))) calc(50% - 50% * cos(var(--a))) var(--_g),
+    linear-gradient(#0000 0 0) content-box intersect,
+    conic-gradient(#000 var(--a), #0000 0);
+}
+
+.antenna:nth-of-type(2) {
+  --b: 7cqw;
+  scale: -1 1;
+  bottom: 53%;
+  left: 65%;
+}
+
+/* STING */
+.sting {
+  --w: 30cqw;
+  position: absolute;
+  z-index: -1;
+  top: 100%;
+  left: 50%;
+  width: var(--w);
+  aspect-ratio: 1 / 1.5;
+  border-radius: 50%;
+  border-right: 20cqw solid #260300;
+  translate: calc(-50% - var(--w) / 2) -70%;
+}
+
+/* WINGS */
+.wings::before,
+.wings::after {
+  content: "";
+  position: absolute;
+  top: 30%;
+  z-index: -1;
+  width: 55cqw;
+  aspect-ratio: 150/70;
+  border-radius: 33% 33% 50% 50% / 15% 15% 85% 85%;
+  background-color: #dcdac6;
+  animation: wing 0.06s infinite alternate;
+}
+
+.wings::before {
+  right: 90%;
+  transform: rotate(25deg);
+  transform-origin: center right;
+  box-shadow: -1cqw -1cqw 0 0 color-mix(in srgb, #dcdac6, black 2.5%),
+    inset -0.5cqw -0.5cqw 0 0 color-mix(in srgb, #dcdac6, white 50%);
+}
+
+.wings::after {
+  left: 90%;
+  transform: rotate(-25deg);
+  transform-origin: center left;
+  box-shadow: 1cqw -1cqw 0 0 color-mix(in srgb, #dcdac6, black 2.5%),
+    inset 0.5cqw -0.5cqw 0 0 color-mix(in srgb, #dcdac6, white 50%);
+}
