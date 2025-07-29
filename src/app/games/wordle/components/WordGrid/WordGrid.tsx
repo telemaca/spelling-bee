@@ -1,40 +1,36 @@
 import { useWordleContext } from "../../context/useWordleContext";
-import { EvaluatedLetter, LetterStatus } from "../../types";
-import {
-  GREEN_COLOR,
-  MAX_ATTEMPTS,
-  WORD_LENGTH,
-  YELLOW_COLOR,
-  GRAY_COLOR,
-} from "@/app/constants/constants";
+import { EvaluatedLetter } from "../../types";
+import { getBgColor } from "../../utils";
+import { MAX_ATTEMPTS, WORD_LENGTH } from "@/app/constants/constants";
 
 export const WordGrid = () => {
   const { currentGuess, evaluatedGuesses } = useWordleContext();
 
-  const remainingRows = MAX_ATTEMPTS - evaluatedGuesses.length - 1;
+  const shouldShowCurrentGuess = evaluatedGuesses.length < MAX_ATTEMPTS;
+
   const rows: EvaluatedLetter[][] = [
     ...evaluatedGuesses,
-    currentGuess
-      .padEnd(WORD_LENGTH)
-      .split("")
-      .map((letter) => ({ letter, status: "empty" })),
-    ...Array(remainingRows).fill(
-      Array(WORD_LENGTH).fill({ letter: "", status: "empty" })
-    ),
+    ...(shouldShowCurrentGuess
+      ? [
+          currentGuess
+            .padEnd(WORD_LENGTH)
+            .split("")
+            .map((letter) => ({ letter, status: "empty" as const })),
+        ]
+      : []),
+    ...Array(
+      Math.max(
+        0,
+        MAX_ATTEMPTS -
+          evaluatedGuesses.length -
+          (shouldShowCurrentGuess ? 1 : 0)
+      )
+    )
+      .fill(null)
+      .map(() =>
+        Array(WORD_LENGTH).fill({ letter: "", status: "empty" as const })
+      ),
   ];
-
-  const getBgColor = (status: LetterStatus) => {
-    switch (status) {
-      case "correct":
-        return GREEN_COLOR;
-      case "present":
-        return YELLOW_COLOR;
-      case "absent":
-        return GRAY_COLOR;
-      default:
-        return "";
-    }
-  };
 
   return (
     <div className="grid grid-rows-6 gap-2">

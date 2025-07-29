@@ -7,7 +7,7 @@ const FeedbackMessage = () => {
 
   return (
     <div
-      className={`fixed top-4 left-1/2 -translate-x-1/2 px-4 py-2 rounded-xl shadow-md text-white transition-all duration-300 ${
+      className={`fixed top-24 left-1/2 -translate-x-1/2 px-4 py-2 shadow-md text-white transition-all duration-300 text-sm ${
         feedback.type === "error" ? "bg-red-500" : "bg-green-600"
       }`}
     >

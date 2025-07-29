@@ -4,16 +4,12 @@ import {
   YELLOW_COLOR,
   GRAY_COLOR,
   GRAY_ABSENT_COLOR,
+  ROWS,
 } from "@/app/constants/constants";
 
 export const Keyboard = () => {
-  const { addLetter, removeLetter, submitGuess, keyboardStatus } =
+  const { addLetter, removeLetter, submitGuess, keyboardStatus, gameStatus } =
     useWordleContext();
-  const rows = [
-    ["Q", "W", "E", "R", "T", "Y", "U", "I", "O", "P"],
-    ["A", "S", "D", "F", "G", "H", "J", "K", "L", "Ñ"],
-    ["ENTER", "Z", "X", "C", "V", "B", "N", "M", "←"],
-  ];
 
   const getKeyClass = (letter: string) => {
     const status = keyboardStatus[letter];
@@ -31,25 +27,27 @@ export const Keyboard = () => {
   };
 
   const handleClick = (key: string) => {
-    if (key === "←") {
-      removeLetter();
-    } else if (key === "ENTER") {
-      submitGuess();
-    } else {
-      addLetter(key);
+    if (gameStatus === "playing") {
+      if (key === "←") {
+        removeLetter();
+      } else if (key === "ENTER") {
+        submitGuess();
+      } else {
+        addLetter(key);
+      }
     }
   };
 
   return (
     <div className="mt-6 space-y-1">
-      {rows.map((row, i) => (
+      {ROWS.map((row, i) => (
         <div key={i} className="flex justify-center gap-1">
           {row.map((key) => (
             <button
               key={key}
-              className={`px-2 py-3 rounded font-semibold text-sm text-white ${getKeyClass(
-                key
-              )}`}
+              className={`px-2 py-3 rounded font-semibold text-sm text-white cursor-pointer ${
+                key === "ENTER" ? "w-[70px]" : "w-[30px]"
+              } ${getKeyClass(key)}`}
               onClick={() => handleClick(key)}
             >
               {key}

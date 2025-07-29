@@ -141,6 +141,10 @@ export const WordleProvider = ({ children }: { children: React.ReactNode }) => {
       setGameStatus("won");
     } else if (newGuesses.length >= 6) {
       setGameStatus("lost");
+      showFeedback(
+        `La palabra era ${dailyWordle?.word.toUpperCase()}`,
+        "error"
+      );
     }
 
     setCurrentGuess("");
