@@ -162,7 +162,7 @@ export const WordleProvider = ({ children }: { children: React.ReactNode }) => {
   const resetGame = () => {
     setCurrentGuess("");
     setGuesses([]);
-    setSolution("PLAZA"); // cambiar por random
+    setSolution("");
     setGameStatus("playing");
     setKeyboardStatus({});
     setFeedback({ message: "", type: "error", on: false });

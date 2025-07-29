@@ -20,16 +20,16 @@ type FeedbackType = {
 
 type GameType = "wordle" | "spellingBee";
 
-type GameHistoryEntry = {
-  game: GameType;
-  date: string;
-  status: {
-    words: string[];
-    points: number;
-  };
+type GameStatusDaily = {
+  words: string[];
+  points: number;
 };
 
-type GameHistory = GameHistoryEntry[];
+type GameHistory = {
+  [game in GameType]?: {
+    [date: string]: GameStatusDaily;
+  };
+};
 
 export type {
   LetterStatus,

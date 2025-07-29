@@ -35,12 +35,12 @@ const loadGameStatus = (date: string): GameEntry["status"] | null => {
 };
 
 export const getGameHistory = (): GameHistory => {
-  if (typeof window === "undefined") return [];
+  if (typeof window === "undefined") return {};
   const raw = localStorage.getItem("gamesHistory");
   try {
-    return raw ? JSON.parse(raw) : [];
+    return raw ? JSON.parse(raw) : {};
   } catch {
-    return [];
+    return {};
   }
 };
 
@@ -52,32 +52,19 @@ export const saveGameAttempt = (
 ) => {
   const history = getGameHistory();
 
-  const existingIndex = history.findIndex(
-    (entry) => entry.game === game && entry.date === date
-  );
+  const gameData = history[game] || {};
+  const dayData = gameData[date] || { words: [], points: 0 };
 
-  if (existingIndex !== -1) {
-    const entry = history[existingIndex];
-
-    if (!entry.status.words.includes(word)) {
-      entry.status.words.push(word);
-    }
-
-    if (points > entry.status.points) {
-      entry.status.points = points;
-    }
-
-    history[existingIndex] = entry;
-  } else {
-    history.push({
-      game,
-      date,
-      status: {
-        words: [word],
-        points,
-      },
-    });
+  if (!dayData.words.includes(word)) {
+    dayData.words.push(word);
   }
+
+  if (points > dayData.points) {
+    dayData.points = points;
+  }
+
+  gameData[date] = dayData;
+  history[game] = gameData;
 
   localStorage.setItem("gamesHistory", JSON.stringify(history));
 };
@@ -87,8 +74,12 @@ export const getAttemptsForGameDate = (
   date: string
 ): string[] => {
   const history = getGameHistory();
-  const entry = history.find((e) => e.game === game && e.date === date);
-  return entry?.status.words || [];
+  return history[game]?.[date]?.words || [];
+};
+
+export const getPointsForGameDate = (game: GameType, date: string): number => {
+  const history = getGameHistory();
+  return history[game]?.[date]?.points || 0;
 };
 
 export { saveGameStatus, loadGameStatus };

@@ -7,13 +7,17 @@ import { PrimeReactProvider } from "primereact/api";
 import {
   shuffleArray,
   getFeedbackColor,
-  saveGameStatus,
-  loadGameStatus,
   findValidWords,
   calculatePoints,
   getLocalDateString,
   isPangram,
 } from "@/utils";
+
+import {
+  saveGameAttempt,
+  getAttemptsForGameDate,
+  getPointsForGameDate,
+} from "@/utils/gameStatus";
 
 import { usePanalDelDia } from "./hooks/usedailyPanal";
 
@@ -73,10 +77,14 @@ export default function SpellingBee() {
   });
 
   useEffect(() => {
-    const stateOfGame = loadGameStatus(today);
-    if (stateOfGame) {
-      setFoundWords(stateOfGame.words);
-      setPoints(stateOfGame.points);
+    // const stateOfGame = loadGameStatus(today);
+    const stateOfGameWords = getAttemptsForGameDate("spellingBee", today);
+    const stateOfGamePoints = getPointsForGameDate("spellingBee", today);
+
+    // getAttemptsForGameDate;
+    if (stateOfGameWords) {
+      setFoundWords(stateOfGameWords);
+      setPoints(stateOfGamePoints);
     }
     // Cargamos las palabras desde un endpoint local
     if (letterArray.length > 1) {
@@ -130,12 +138,12 @@ export default function SpellingBee() {
           setFoundWords([guessedWord, ...foundWords]);
           setPoints(points + wordPoints);
 
-          const gameState = {
-            words: [guessedWord, ...foundWords],
-            points: points + wordPoints,
-          };
-
-          saveGameStatus(today, gameState);
+          saveGameAttempt(
+            "spellingBee",
+            today,
+            guessedWord,
+            points + wordPoints
+          );
         } else {
           //! PALABRA YA ENCONTRADA
           setErrorCount((prev) => prev + 1);
