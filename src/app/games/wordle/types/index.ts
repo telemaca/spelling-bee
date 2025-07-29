@@ -18,4 +18,25 @@ type FeedbackType = {
   on: boolean;
 };
 
-export type { LetterStatus, EvaluatedLetter, GameStatus, Word, FeedbackType };
+type GameType = "wordle" | "spellingBee";
+
+type GameHistoryEntry = {
+  game: GameType;
+  date: string;
+  status: {
+    words: string[];
+    points: number;
+  };
+};
+
+type GameHistory = GameHistoryEntry[];
+
+export type {
+  LetterStatus,
+  EvaluatedLetter,
+  GameStatus,
+  Word,
+  FeedbackType,
+  GameHistory,
+  GameType,
+};

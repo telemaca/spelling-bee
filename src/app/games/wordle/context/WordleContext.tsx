@@ -24,6 +24,8 @@ type WordleContextType = {
 
 import { evaluateGuess, findInDictionary } from "../utils/index";
 import { useDailyWordle } from "../hooks/useDailyWord";
+import { getAttemptsForGameDate, saveGameAttempt } from "@/utils/gameStatus";
+import { getLocalDateString } from "../../spelling-bee/utils";
 
 export const WordleContext = createContext<WordleContextType | undefined>(
   undefined
@@ -31,6 +33,7 @@ export const WordleContext = createContext<WordleContextType | undefined>(
 
 export const WordleProvider = ({ children }: { children: React.ReactNode }) => {
   const dailyWordle = useDailyWordle();
+  const today = getLocalDateString();
   const [dictionary, setDictionary] = useState<string[]>([]);
   const [currentGuess, setCurrentGuess] = useState("");
   const [guesses, setGuesses] = useState<string[]>([]);
@@ -81,6 +84,11 @@ export const WordleProvider = ({ children }: { children: React.ReactNode }) => {
   useEffect(() => {
     if (dailyWordle) {
       setSolution(dailyWordle.word);
+      const previousAttempts = getAttemptsForGameDate("wordle", today);
+      const evaluatedPrevious = previousAttempts.map((word) =>
+        evaluateGuess(word, dailyWordle.word)
+      );
+      setEvaluatedGuesses(evaluatedPrevious);
     }
   }, [dailyWordle]);
 
@@ -116,6 +124,7 @@ export const WordleProvider = ({ children }: { children: React.ReactNode }) => {
 
     const newGuesses = [...guesses, currentGuess];
     setGuesses(newGuesses);
+    saveGameAttempt("wordle", today, currentGuess, 0);
 
     setKeyboardStatus((prev) => {
       const newStatus = { ...prev };
