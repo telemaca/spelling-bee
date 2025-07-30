@@ -1,4 +1,4 @@
-import { EvaluatedLetter } from "../types";
+import { EvaluatedLetter } from "@/types";
 
 export const evaluateGuess = (
   guess: string,

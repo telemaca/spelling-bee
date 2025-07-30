@@ -1,6 +1,6 @@
 import { useWordleContext } from "../../context/useWordleContext";
 import { EvaluatedLetter } from "../../types";
-import { getBgColor } from "../../utils";
+import { getBgColor } from "@/utils";
 import { MAX_ATTEMPTS, WORD_LENGTH } from "@/app/constants/constants";
 
 export const WordGrid = () => {

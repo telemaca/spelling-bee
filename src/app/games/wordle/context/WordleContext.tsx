@@ -22,7 +22,7 @@ type WordleContextType = {
   resetGame: () => void;
 };
 
-import { evaluateGuess, findInDictionary } from "../utils/index";
+import { evaluateGuess, findInDictionary } from "@/utils";
 import { useDailyWordle } from "../hooks/useDailyWord";
 import { getAttemptsForGameDate, saveGameAttempt } from "@/utils/gameStatus";
 import { getLocalDateString } from "../../spelling-bee/utils";
