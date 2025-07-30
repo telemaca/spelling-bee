@@ -4,7 +4,7 @@ import {
   GRAY_COLOR,
 } from "@/app/constants/constants";
 
-import { LetterStatus } from "../types";
+import { LetterStatus } from "@/types";
 
 export const getBgColor = (status: LetterStatus) => {
   switch (status) {

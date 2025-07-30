@@ -1,4 +1,4 @@
-import { GameHistory, GameType } from "@/app/games/wordle/types";
+import { GameHistory, GameType } from "@/types";
 
 type GameEntry = {
   date: string;

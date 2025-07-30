@@ -5,7 +5,7 @@ import {
   EvaluatedLetter,
   GameStatus,
   FeedbackType,
-} from "../types";
+} from "@/types";
 import { removeAccents } from "@/utils";
 
 type WordleContextType = {

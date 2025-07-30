@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 
 import { getLocalDateString } from "@/utils";
 
-import { Word } from "../types";
+import { Word } from "@/types";
 
 export const useDailyWordle = (): Word | null => {
   const [wordle, setWordle] = useState<Word | null>(null);
