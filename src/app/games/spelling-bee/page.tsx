@@ -74,11 +74,9 @@ export default function SpellingBee() {
   });
 
   useEffect(() => {
-    // const stateOfGame = loadGameStatus(today);
     const stateOfGameWords = getAttemptsForGameDate("spellingBee", today);
     const stateOfGamePoints = getPointsForGameDate("spellingBee", today);
 
-    // getAttemptsForGameDate;
     if (stateOfGameWords) {
       setFoundWords(stateOfGameWords);
       setPoints(stateOfGamePoints);
@@ -115,73 +113,68 @@ export default function SpellingBee() {
   };
 
   const handleSearch = () => {
-    if (guessedWord.length < 4) {
+    const isTooShort = guessedWord.length < 4;
+    const isAlreadyFound = foundWords.includes(guessedWord);
+    const isValid = possibleWords.includes(guessedWord);
+    const hasCenterLetter = guessedWord.includes(centerLetter);
+
+    const resetAfterDelay = () => {
+      setTimeout(() => {
+        setGuessedWord("");
+      }, 1000);
+
+      setTimeout(() => {
+        setFeedback({
+          on: false,
+          message: ".",
+          type: "short",
+        });
+      }, 2000);
+    };
+
+    const handleError = (
+      message: string,
+      type: "short" | "existing" | "error"
+    ) => {
       setErrorCount((prev) => prev + 1);
+      setFeedback({ on: true, message, type });
+      resetAfterDelay();
+    };
+
+    const handleSuccess = () => {
+      const wordPoints = calculatePoints(guessedWord, letterArray);
+      const newPoints = points + wordPoints;
+
       setFeedback({
         on: true,
-        message: "Muy corta",
-        type: "short",
+        message: setSuccesMsg(guessedWord, wordPoints),
+        type: "success",
       });
-    } else {
-      if (possibleWords.includes(guessedWord)) {
-        if (!foundWords.includes(guessedWord)) {
-          //! PALABRA CORRECTA NUEVA
-          const wordPoints = calculatePoints(guessedWord, letterArray);
-          setFeedback({
-            on: true,
-            message: setSuccesMsg(guessedWord, wordPoints),
-            type: "success",
-          });
-          setFoundWords([guessedWord, ...foundWords]);
-          setPoints(points + wordPoints);
 
-          saveGameAttempt(
-            "spellingBee",
-            today,
-            guessedWord,
-            points + wordPoints
-          );
-        } else {
-          //! PALABRA YA ENCONTRADA
-          setErrorCount((prev) => prev + 1);
-          setFeedback({
-            on: true,
-            message: "Ya encontrada",
-            type: "existing",
-          });
-        }
-      } else {
-        if (!guessedWord.includes(centerLetter)) {
-          //! PALABRA SIN LETRAS CENTRAL
-          setErrorCount((prev) => prev + 1);
-          setFeedback({
-            on: true,
-            message: "¿Letra central?",
-            type: "error",
-          });
-        } else {
-          //! PALABRA NO VÁLIDA
-          setErrorCount((prev) => prev + 1);
-          setFeedback({
-            on: true,
-            message: "No es válida",
-            type: "error",
-          });
-        }
-      }
+      setFoundWords([guessedWord, ...foundWords]);
+      setPoints(newPoints);
+
+      saveGameAttempt("spellingBee", today, guessedWord, newPoints);
+      resetAfterDelay();
+    };
+
+    if (isTooShort) {
+      return handleError("Muy corta", "short");
     }
 
-    setTimeout(() => {
-      setGuessedWord("");
-    }, 1000);
+    if (!isValid) {
+      return handleError("No es válida", "error");
+    }
 
-    setTimeout(() => {
-      setFeedback({
-        on: false,
-        message: ".",
-        type: "short",
-      });
-    }, 2000);
+    if (!hasCenterLetter) {
+      return handleError("¿Letra central?", "error");
+    }
+
+    if (isAlreadyFound) {
+      return handleError("Ya encontrada", "existing");
+    }
+
+    handleSuccess();
   };
 
   const handleEnter = (e: React.KeyboardEvent<HTMLInputElement>) => {

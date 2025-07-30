@@ -93,7 +93,15 @@ export const WordleProvider = ({ children }: { children: React.ReactNode }) => {
       const evaluatedPrevious = previousAttempts.map((word) =>
         evaluateGuess(word, dailyWordle.word)
       );
+      setGuesses(previousAttempts);
       setEvaluatedGuesses(evaluatedPrevious);
+      if (previousAttempts.includes(dailyWordle.word)) {
+        setGameStatus("won");
+      } else {
+        if (previousAttempts.length === 6) {
+          setGameStatus("lost");
+        }
+      }
     }
   }, [dailyWordle]);
 
