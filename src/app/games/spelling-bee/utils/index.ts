@@ -15,6 +15,5 @@ export {
   loadGameStatus,
   findValidWords,
   calculatePoints,
-  getLocalDateString,
   isPangram,
 };
