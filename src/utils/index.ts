@@ -8,6 +8,11 @@ import { evaluateGuess } from "./evaluateGuess";
 import { getBgColor } from "./getBgColor";
 import { findInDictionary } from "./findInDictionary";
 import {
+  saveGameAttempt,
+  getAttemptsForGameDate,
+  getPointsForGameDate,
+} from "./gameStatus";
+import {
   findValidWords,
   calculatePoints,
   // getDailyPanal,
@@ -26,4 +31,7 @@ export {
   evaluateGuess,
   getBgColor,
   findInDictionary,
+  saveGameAttempt,
+  getAttemptsForGameDate,
+  getPointsForGameDate,
 };

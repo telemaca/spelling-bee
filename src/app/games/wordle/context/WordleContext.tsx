@@ -12,9 +12,11 @@ import {
   findInDictionary,
   removeAccents,
   getToday,
+  getAttemptsForGameDate,
+  saveGameAttempt,
 } from "@/utils";
+
 import { useDailyWordle } from "../hooks/useDailyWord";
-import { getAttemptsForGameDate, saveGameAttempt } from "@/utils/gameStatus";
 
 type WordleContextType = {
   currentGuess: string;

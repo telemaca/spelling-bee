@@ -11,13 +11,10 @@ import {
   calculatePoints,
   getToday,
   isPangram,
-} from "@/utils";
-
-import {
   saveGameAttempt,
   getAttemptsForGameDate,
   getPointsForGameDate,
-} from "@/utils/gameStatus";
+} from "@/utils";
 
 import { usePanalDelDia } from "./hooks/usedailyPanal";
 
