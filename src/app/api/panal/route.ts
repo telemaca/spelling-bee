@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 
-import { getLocalDateString } from "@/utils";
+import { getToday } from "@/utils";
 
 const panales: Record<string, { letras: string; central: string }> = {
   "2025-07-19": {
@@ -34,7 +34,7 @@ const panales: Record<string, { letras: string; central: string }> = {
 };
 
 export async function GET() {
-  const today = getLocalDateString();
+  const today = getToday();
   const panal = panales[today] || panales["2025-07-19"];
 
   return NextResponse.json({ date: today, ...panal });

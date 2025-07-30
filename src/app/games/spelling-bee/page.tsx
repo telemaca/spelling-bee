@@ -9,7 +9,7 @@ import {
   getFeedbackColor,
   findValidWords,
   calculatePoints,
-  getLocalDateString,
+  getToday,
   isPangram,
 } from "@/utils";
 
@@ -61,7 +61,7 @@ export default function SpellingBee() {
   const [shuffleId, setShuffleId] = useState<number>(0);
   const [isVisible, setIsVisible] = useState<boolean>(true);
   const [isLoaded, setIsLoaded] = useState<boolean>(!!panal);
-  const today = getLocalDateString();
+  const today = getToday();
 
   type FeedbackType = "success" | "short" | "error" | "existing";
   interface FeedbackState {

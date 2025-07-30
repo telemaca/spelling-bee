@@ -6,7 +6,15 @@ import {
   GameStatus,
   FeedbackType,
 } from "@/types";
-import { removeAccents } from "@/utils";
+
+import {
+  evaluateGuess,
+  findInDictionary,
+  removeAccents,
+  getToday,
+} from "@/utils";
+import { useDailyWordle } from "../hooks/useDailyWord";
+import { getAttemptsForGameDate, saveGameAttempt } from "@/utils/gameStatus";
 
 type WordleContextType = {
   currentGuess: string;
@@ -22,18 +30,13 @@ type WordleContextType = {
   resetGame: () => void;
 };
 
-import { evaluateGuess, findInDictionary } from "@/utils";
-import { useDailyWordle } from "../hooks/useDailyWord";
-import { getAttemptsForGameDate, saveGameAttempt } from "@/utils/gameStatus";
-import { getLocalDateString } from "../../spelling-bee/utils";
-
 export const WordleContext = createContext<WordleContextType | undefined>(
   undefined
 );
 
 export const WordleProvider = ({ children }: { children: React.ReactNode }) => {
   const dailyWordle = useDailyWordle();
-  const today = getLocalDateString();
+  const today = getToday();
   const [dictionary, setDictionary] = useState<string[]>([]);
   const [currentGuess, setCurrentGuess] = useState("");
   const [guesses, setGuesses] = useState<string[]>([]);

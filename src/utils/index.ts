@@ -1,6 +1,6 @@
 import shuffleArray from "./shuffleArray";
 import getFeedbackColor from "./getFeedbackColor";
-import getLocalDateString from "./getToday";
+import { getToday } from "./getToday";
 import isPangram from "./pangram";
 import { removeAccents } from "./removeAccents";
 import { saveGameStatus, loadGameStatus } from "./gameStatus";
@@ -20,7 +20,7 @@ export {
   loadGameStatus,
   findValidWords,
   calculatePoints,
-  getLocalDateString,
+  getToday,
   isPangram,
   removeAccents,
   evaluateGuess,

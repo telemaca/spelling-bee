@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 
-import { getLocalDateString } from "@/utils";
+import { getToday } from "@/utils";
 
 import { Word } from "@/types";
 
@@ -10,7 +10,7 @@ export const useDailyWordle = (): Word | null => {
 
   useEffect(() => {
     const fetchWordle = async () => {
-      const today = getLocalDateString();
+      const today = getToday();
 
       try {
         const saved = localStorage.getItem(STORAGE_KEY);

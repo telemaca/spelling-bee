@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 
-import { getLocalDateString } from "@/utils";
+import { getToday } from "@/utils";
 
 type Panal = {
   letras: string;
@@ -14,7 +14,7 @@ export const usePanalDelDia = (): Panal | null => {
 
   useEffect(() => {
     const fetchPanal = async () => {
-      const today = getLocalDateString();
+      const today = getToday();
 
       try {
         const saved = localStorage.getItem(STORAGE_KEY);

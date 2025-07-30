@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 
-import { getLocalDateString } from "@/utils";
+import { getToday } from "@/utils";
 
 const wordles: Record<string, { word: string }> = {
   "2025-07-19": {
@@ -27,7 +27,7 @@ const wordles: Record<string, { word: string }> = {
 };
 
 export async function GET() {
-  const today = getLocalDateString();
+  const today = getToday();
   const wordle = wordles[today] || wordles["2025-07-19"];
 
   return NextResponse.json({ date: today, ...wordle });
